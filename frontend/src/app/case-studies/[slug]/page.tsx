@@ -2,9 +2,23 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  BarChart3,
+  CheckCircle2,
+  Layers,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import { CASE_STUDIES, CaseStudy } from "@/data/portfolioData";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 import type { Metadata } from "next";
 
 interface CaseStudyPageProps {
@@ -30,7 +44,7 @@ export async function generateMetadata({ params }: CaseStudyPageProps): Promise<
   }
 
   return {
-    title: `${project.brand} &mdash; ${project.title} | Hamdan Ahmed Portfolio`,
+    title: `${project.brand} — ${project.title} | Hamdan Ahmed`,
     description: project.summary,
   };
 }
@@ -48,770 +62,262 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyPageProps
   const nextProject = projectIndex < CASE_STUDIES.length - 1 ? CASE_STUDIES[projectIndex + 1] : CASE_STUDIES[0];
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-body)" }}>
+    <div className="min-h-screen bg-obsidian text-silver selection:bg-aero selection:text-white">
       <Navbar isCaseStudy={true} />
 
-      <main style={{ paddingBottom: "6rem" }}>
-        {/* Breadcrumb Header */}
-        <section
-          style={{
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-card)",
-            padding: "1.25rem 0",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: "1rem",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.78rem",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <Link
-                  href="/"
-                  style={{
-                    color: "var(--text-secondary)",
-                    textDecoration: "none",
-                  }}
-                >
-                  PORTFOLIO
-                </Link>
-                <span style={{ color: "var(--text-muted)" }}>/</span>
-                <span style={{ color: "var(--text-secondary)" }}>CASE STUDIES</span>
-                <span style={{ color: "var(--text-muted)" }}>/</span>
-                <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>
-                  PROJECT {project.number} &mdash; {project.brand}
-                </span>
-              </div>
+      <main className="relative pt-24 pb-20 sm:pt-28">
+        {/* Background Grids & Ambient Glow */}
+        <div aria-hidden className="absolute inset-0 bg-grid opacity-30 mask-fade-y pointer-events-none" />
+        <div aria-hidden className="absolute -top-40 left-1/4 h-[500px] w-[500px] rounded-full bg-boeing/25 blur-[140px] pointer-events-none" />
 
-              <Link
-                href="/"
-                style={{
-                  color: "var(--vermilion)",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.35rem",
-                }}
-              >
-                ← BACK TO MAIN PAGE
+        {/* Breadcrumb Bar */}
+        <section className="border-b border-white/[0.08] bg-midnight/60 py-3.5 backdrop-blur-md">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8 text-xs font-mono">
+            <div className="flex items-center gap-2 text-slate-400">
+              <Link href="/" className="hover:text-white transition-colors">
+                Home
               </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Hero Section */}
-        <section
-          style={{
-            padding: "4rem 0 3rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            position: "relative",
-          }}
-        >
-          <div className="site-container">
-            {/* Project Label & Number */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "1.5rem",
-                borderBottom: "1px solid var(--border-light)",
-                paddingBottom: "1rem",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.9rem",
-                    fontWeight: 700,
-                    color: "#FFFFFF",
-                    backgroundColor: "var(--vermilion)",
-                    padding: "0.25rem 0.65rem",
-                  }}
-                >
-                  PROJECT {project.number}
-                </span>
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.82rem",
-                    color: "var(--text-secondary)",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {project.category} &bull; {project.duration}
-                </span>
-              </div>
-
-              <span
-                style={{
-                  fontFamily: "var(--font-script)",
-                  fontSize: "1.75rem",
-                  color: "var(--vermilion)",
-                }}
-              >
-                {project.brand}
+              <span>/</span>
+              <Link href="/#case-studies" className="hover:text-white transition-colors">
+                Case Studies
+              </Link>
+              <span>/</span>
+              <span className="text-ping font-semibold uppercase tracking-wider">
+                [{project.number}] {project.brand}
               </span>
             </div>
 
-            {/* Title & Key Highlights Grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3rem",
-                alignItems: "flex-end",
-                marginBottom: "3rem",
-              }}
+            <Link
+              href="/#case-studies"
+              className="inline-flex items-center gap-1.5 text-ping hover:underline font-semibold"
             >
-              <div>
-                <h1
-                  style={{
-                    fontSize: "clamp(2.2rem, 4.5vw, 3.75rem)",
-                    lineHeight: 1.08,
-                    fontWeight: 900,
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  {project.title}
-                </h1>
-                <p
-                  style={{
-                    fontSize: "1.15rem",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.6,
-                    maxWidth: "600px",
-                  }}
-                >
-                  {project.summary}
-                </p>
-              </div>
+              <ArrowLeft className="h-3.5 w-3.5" /> Back to Case Studies
+            </Link>
+          </div>
+        </section>
 
-              {/* Big Stat Boxes (Slide deck style) */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "1.25rem",
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: "var(--bg-card)",
-                    border: "1px solid var(--border-light)",
-                    borderTop: "4px solid var(--vermilion)",
-                    padding: "1.75rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.75rem",
-                      color: "var(--text-muted)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    {project.heroStatLabel}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "2.75rem",
-                      fontWeight: 900,
-                      color: "var(--vermilion)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {project.heroStat}
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    backgroundColor: "var(--bg-card)",
-                    border: "1px solid var(--border-light)",
-                    borderTop: "4px solid var(--text-main)",
-                    padding: "1.75rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.75rem",
-                      color: "var(--text-muted)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    {project.secondaryStatLabel}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "2.75rem",
-                      fontWeight: 900,
-                      color: "var(--text-main)",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {project.secondaryStat}
-                  </div>
-                </div>
-              </div>
+        {/* Case Study Hero */}
+        <section className="relative overflow-hidden py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
+              <span className="rounded-md border border-ping/40 bg-ping/10 px-2.5 py-1 text-ping uppercase tracking-widest font-semibold">
+                Case Study [{project.number}]
+              </span>
+              <span className="text-slate-400">·</span>
+              <span className="text-silver font-medium">{project.industry}</span>
+              <span className="text-slate-400">·</span>
+              <span className="text-slate-400">{project.duration} Duration</span>
             </div>
 
-            {/* Campaign Visual Asset */}
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                height: "auto",
-                aspectRatio: "16 / 9",
-                maxHeight: "620px",
-                backgroundColor: "var(--bg-dark)",
-                border: "1px solid var(--border-light)",
-                overflow: "hidden",
-                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.12)",
-              }}
-            >
-              <Image
-                src={project.image}
-                alt={`${project.brand} Case Study Campaign Dashboard`}
-                fill
-                priority
-                style={{ objectFit: "cover" }}
-                sizes="(max-width: 1200px) 100vw, 1200px"
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  padding: "1rem 1.5rem",
-                  background:
-                    "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%)",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  color: "#FFFFFF",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.75rem",
-                }}
-              >
-                <span>CAMPAIGN ATTRIBUTION DASHBOARD // {project.brand}</span>
-                <span style={{ color: "var(--vermilion)" }}>VERIFIED PERFORMANCE DATA</span>
+            <h1 className="mt-4 max-w-4xl font-display text-3xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+              {project.title}
+            </h1>
+
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-steel sm:text-lg">
+              {project.summary}
+            </p>
+
+            {/* Key Figures HUD Strip */}
+            <div className="mt-10 grid grid-cols-2 gap-4 rounded-3xl border border-white/10 bg-midnight/70 p-6 shadow-2xl backdrop-blur-xl sm:grid-cols-4 sm:p-8">
+              <div className="border-r border-white/[0.08] pr-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ping">Return On Ad Spend</p>
+                <p className="mt-2 font-display text-2xl sm:text-4xl font-bold text-signal">{project.roas}</p>
+                <p className="mt-1 text-xs text-slate-400">{project.secondaryStatLabel}</p>
+              </div>
+
+              <div className="sm:border-r border-white/[0.08] sm:pr-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ping">Generated Revenue</p>
+                <p className="mt-2 font-display text-2xl sm:text-4xl font-bold text-white">{project.revenue}</p>
+                <p className="mt-1 text-xs text-slate-400">{project.heroStatLabel}</p>
+              </div>
+
+              <div className="border-r border-white/[0.08] pr-4 pt-4 sm:pt-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ping">Paid Orders</p>
+                <p className="mt-2 font-display text-2xl sm:text-4xl font-bold text-white">{project.orders}</p>
+                <p className="mt-1 text-xs text-slate-400">Verified Conversions</p>
+              </div>
+
+              <div className="pt-4 sm:pt-0">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-ping">Target Market</p>
+                <p className="mt-2 font-display text-2xl sm:text-4xl font-bold text-white">{project.market}</p>
+                <p className="mt-1 text-xs text-slate-400">{project.platform}</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Detailed Breakdown Sections */}
-        <section style={{ padding: "4rem 0" }}>
-          <div className="site-container">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3.5rem",
-              }}
-            >
-              {/* Left Column: Narrative Details */}
-              <div style={{ flex: 2 }}>
-                {/* 1. The Challenge */}
-                <div style={{ marginBottom: "3.5rem" }}>
-                  <div className="section-meta-tag">01 // THE CHALLENGE</div>
-                  <h2
-                    style={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    Overcoming Scale Ceilings &amp; Rising Acquisition Costs
-                  </h2>
-                  <p
-                    style={{
-                      fontSize: "1.05rem",
-                      color: "var(--text-secondary)",
-                      lineHeight: 1.7,
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    {project.challenge}
-                  </p>
-                </div>
-
-                {/* 2. Strategy & Funnel Architecture */}
-                <div style={{ marginBottom: "3.5rem" }}>
-                  <div className="section-meta-tag">02 // ARCHITECTURE &amp; STRATEGY</div>
-                  <h2
-                    style={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    {project.strategy.title}
-                  </h2>
-                  <p
-                    style={{
-                      fontSize: "1.05rem",
-                      color: "var(--text-secondary)",
-                      lineHeight: 1.7,
-                      marginBottom: "2rem",
-                    }}
-                  >
-                    {project.strategy.description}
-                  </p>
-
-                  {/* Funnel Stage Cards */}
-                  <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-                    {project.strategy.funnel.map((step, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          backgroundColor: "var(--bg-card)",
-                          border: "1px solid var(--border-light)",
-                          borderLeft: "4px solid var(--vermilion)",
-                          padding: "1.5rem",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            marginBottom: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.75rem",
-                              color: "var(--vermilion)",
-                              fontWeight: 700,
-                            }}
-                          >
-                            STAGE 0{idx + 1}
-                          </span>
-                          <span
-                            style={{
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.72rem",
-                              color: "var(--text-muted)",
-                            }}
-                          >
-                            {step.target}
-                          </span>
-                        </div>
-                        <h3
-                          style={{
-                            fontSize: "1.25rem",
-                            fontWeight: 700,
-                            marginBottom: "0.5rem",
-                          }}
-                        >
-                          {step.stage}
-                        </h3>
-                        <p
-                          style={{
-                            fontSize: "0.95rem",
-                            color: "var(--text-secondary)",
-                            lineHeight: 1.6,
-                          }}
-                        >
-                          <strong style={{ color: "var(--text-main)" }}>Creative Mechanism: </strong>
-                          {step.creative}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 3. Core Deliverables */}
-                <div style={{ marginBottom: "3.5rem" }}>
-                  <div className="section-meta-tag">03 // EXECUTION STACK</div>
-                  <h2
-                    style={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    Implemented Systems &amp; Workflows
-                  </h2>
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                      gap: "1rem",
-                    }}
-                  >
-                    {project.deliverables.map((item, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          backgroundColor: "var(--bg-card)",
-                          border: "1px solid var(--border-light)",
-                          padding: "1.25rem",
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "0.75rem",
-                        }}
-                      >
-                        <span
-                          style={{
-                            color: "var(--vermilion)",
-                            fontFamily: "var(--font-mono)",
-                            fontWeight: 700,
-                            fontSize: "0.85rem",
-                          }}
-                        >
-                          0{idx + 1}.
-                        </span>
-                        <span style={{ fontSize: "0.95rem", fontWeight: 500 }}>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 4. Strategic Learnings */}
-                <div>
-                  <div className="section-meta-tag">04 // INSIGHTS &amp; TAKEAWAYS</div>
-                  <h2
-                    style={{
-                      fontSize: "2rem",
-                      fontWeight: 800,
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    What This Means For Your Brand
-                  </h2>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                    {project.learnings.map((learn, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "1rem",
-                          padding: "1.25rem",
-                          backgroundColor: "var(--bg-card)",
-                          border: "1px solid var(--border-light)",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "24px",
-                            height: "24px",
-                            backgroundColor: "var(--vermilion-subtle)",
-                            color: "var(--vermilion)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderRadius: "50%",
-                            flexShrink: 0,
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                          }}
-                        >
-                          ✓
-                        </div>
-                        <p style={{ fontSize: "0.95rem", color: "var(--text-secondary)", lineHeight: 1.6 }}>
-                          {learn}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+        {/* Campaign Visual Showcase */}
+        {project.image && (
+          <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
+            <div className="relative overflow-hidden rounded-3xl border border-white/15 bg-midnight/60 shadow-[0_20px_80px_-20px_rgba(0,102,204,0.4)]">
+              <div className="relative aspect-[16/9] w-full">
+                <Image
+                  src={project.image}
+                  alt={`${project.brand} campaign visual`}
+                  fill
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                  className="object-cover"
+                  priority
+                />
               </div>
-
-              {/* Right Column: Metadata Sidebar & Quick Stats */}
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    position: "sticky",
-                    top: "100px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "2rem",
-                  }}
-                >
-                  {/* Metadata Table */}
-                  <div
-                    style={{
-                      backgroundColor: "var(--bg-card)",
-                      border: "1px solid var(--border-light)",
-                      padding: "2rem",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.75rem",
-                        color: "var(--vermilion)",
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        marginBottom: "1rem",
-                        borderBottom: "1px solid var(--border-light)",
-                        paddingBottom: "0.5rem",
-                      }}
-                    >
-                      PROJECT SPECIFICATIONS
-                    </div>
-
-                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                      <div>
-                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                          CLIENT BRAND
-                        </div>
-                        <div style={{ fontWeight: 700, fontSize: "1rem" }}>{project.brand}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                          INDUSTRY / SECTOR
-                        </div>
-                        <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{project.industry}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                          TARGET MARKET
-                        </div>
-                        <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{project.market}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                          CAMPAIGN DURATION
-                        </div>
-                        <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{project.duration}</div>
-                      </div>
-
-                      <div>
-                        <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                          ADVERTISING PLATFORMS
-                        </div>
-                        <div style={{ fontWeight: 600, fontSize: "0.95rem" }}>{project.platform}</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Results Metric Card */}
-                  <div
-                    style={{
-                      backgroundColor: "var(--bg-dark)",
-                      color: "#FFFFFF",
-                      padding: "2rem",
-                      border: "1px solid var(--border-dark)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.75rem",
-                        color: "var(--vermilion)",
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        marginBottom: "1.25rem",
-                      }}
-                    >
-                      FINAL MEASURED OUTCOMES
-                    </div>
-
-                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                      {project.results.map((r, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            borderBottom: "1px solid rgba(255,255,255,0.08)",
-                            paddingBottom: "0.6rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.78rem",
-                              color: "var(--text-inverse-muted)",
-                            }}
-                          >
-                            {r.metric}
-                          </span>
-                          <span
-                            style={{
-                              fontFamily: "var(--font-serif)",
-                              fontSize: "1.15rem",
-                              fontWeight: 700,
-                              color: "var(--vermilion)",
-                            }}
-                          >
-                            {r.value}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div style={{ marginTop: "2rem" }}>
-                      <a
-                        href="/#contact"
-                        className="btn-primary"
-                        style={{ width: "100%", textAlign: "center" }}
-                      >
-                        Request Case Study Briefing →
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Client Quote Box if exists */}
-                  {project.testimonial && (
-                    <div
-                      style={{
-                        backgroundColor: "var(--bg-card)",
-                        border: "1px solid var(--border-light)",
-                        padding: "1.75rem",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontFamily: "var(--font-serif)",
-                          fontSize: "3rem",
-                          lineHeight: 0.8,
-                          color: "var(--vermilion)",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        “
-                      </div>
-                      <p
-                        style={{
-                          fontSize: "0.95rem",
-                          fontStyle: "italic",
-                          lineHeight: 1.6,
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {project.testimonial.quote}
-                      </p>
-                      <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem" }}>
-                        <strong>{project.testimonial.author}</strong> &mdash;{" "}
-                        <span style={{ color: "var(--text-muted)" }}>
-                          {project.testimonial.title}, {project.brand}
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
+              <div className="flex items-center justify-between border-t border-white/[0.08] bg-obsidian/90 px-6 py-3 font-mono text-xs text-slate-steel">
+                <span>Ad Creative System &amp; Attribution Architecture</span>
+                <span className="text-ping">{project.brand} Growth Cell</span>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* Challenge & Strategy Dual Column */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* The Challenge Card */}
+            <div className="rounded-3xl border border-white/10 bg-midnight/50 p-6 sm:p-8 backdrop-blur-md">
+              <div className="flex items-center gap-2.5 font-mono text-xs text-ping uppercase tracking-widest">
+                <Target className="h-4 w-4" />
+                <span>Phase 01 Diagnostics</span>
+              </div>
+              <h2 className="mt-4 font-display text-2xl sm:text-3xl font-bold text-white">
+                The Core Bottleneck &amp; Objective
+              </h2>
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-steel">
+                {project.challenge}
+              </p>
+            </div>
+
+            {/* Strategic Framework Card */}
+            <div className="rounded-3xl border border-white/10 bg-midnight/50 p-6 sm:p-8 backdrop-blur-md">
+              <div className="flex items-center gap-2.5 font-mono text-xs text-signal uppercase tracking-widest">
+                <Zap className="h-4 w-4" />
+                <span>Phase 02 Architecture</span>
+              </div>
+              <h2 className="mt-4 font-display text-2xl sm:text-3xl font-bold text-white">
+                {project.strategy.title}
+              </h2>
+              <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-steel">
+                {project.strategy.description}
+              </p>
             </div>
           </div>
         </section>
 
-        {/* Project Pagination & Jump to Next */}
-        <section
-          style={{
-            borderTop: "1px solid var(--border-light)",
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-card)",
-            padding: "2.5rem 0",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "2rem",
-              }}
-            >
-              <Link
-                href={`/case-studies/${prevProject.slug}`}
-                style={{
-                  textDecoration: "none",
-                  color: "inherit",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.25rem",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  ← PREVIOUS CASE STUDY
-                </span>
-                <span
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "1.35rem",
-                    fontWeight: 800,
-                    color: "var(--text-main)",
-                  }}
-                >
-                  PROJECT {prevProject.number}: {prevProject.brand}
-                </span>
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--vermilion)" }}>
-                  {prevProject.heroStat} {prevProject.heroStatLabel}
-                </span>
-              </Link>
+        {/* 3-Tier Customer Journey Funnel */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+          <div className="mb-8">
+            <span className="font-mono text-xs uppercase tracking-[0.24em] text-ping">Audience Architecture</span>
+            <h2 className="mt-2 font-display text-2xl sm:text-4xl font-bold text-white">
+              Full-Funnel Campaign Execution
+            </h2>
+          </div>
 
-              <Link
-                href={`/case-studies/${nextProject.slug}`}
-                style={{
-                  textDecoration: "none",
-                  color: "inherit",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-end",
-                  textAlign: "right",
-                  gap: "0.25rem",
-                }}
+          <div className="grid gap-6 sm:grid-cols-3">
+            {project.strategy.funnel.map((f, i) => (
+              <div
+                key={f.stage}
+                className="relative rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6 shadow-lg backdrop-blur-md"
               >
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  NEXT CASE STUDY →
+                <span className="font-mono text-xs font-semibold text-ping uppercase tracking-wider">
+                  [ Tier 0{i + 1} ]
                 </span>
-                <span
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "1.35rem",
-                    fontWeight: 800,
-                    color: "var(--text-main)",
-                  }}
-                >
-                  PROJECT {nextProject.number}: {nextProject.brand}
-                </span>
-                <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--vermilion)" }}>
-                  {nextProject.heroStat} {nextProject.heroStatLabel}
-                </span>
-              </Link>
+                <h3 className="mt-2 font-display text-lg font-semibold text-white">{f.stage}</h3>
+
+                <div className="mt-4 space-y-3 text-xs leading-relaxed">
+                  <div>
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400">
+                      Target Audience:
+                    </span>
+                    <p className="text-silver mt-0.5">{f.target}</p>
+                  </div>
+                  <div>
+                    <span className="font-mono text-[9px] uppercase tracking-wider text-slate-400">
+                      Creative Angles:
+                    </span>
+                    <p className="text-slate-steel mt-0.5">{f.creative}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Deliverables & Verified Metrics */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Deliverables List */}
+            <div className="rounded-3xl border border-white/10 bg-midnight/50 p-6 sm:p-8">
+              <p className="font-mono text-xs uppercase tracking-[0.24em] text-ping">Technical Deliverables</p>
+              <h3 className="mt-2 font-display text-xl sm:text-2xl font-bold text-white">
+                What Was Engineered &amp; Deployed
+              </h3>
+              <ul className="mt-6 space-y-3">
+                {project.deliverables.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-sm text-silver">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-signal mt-0.5" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
+
+            {/* Campaign Learnings & Insights */}
+            <div className="rounded-3xl border border-white/10 bg-midnight/50 p-6 sm:p-8">
+              <p className="font-mono text-xs uppercase tracking-[0.24em] text-signal">Key Growth Takeaways</p>
+              <h3 className="mt-2 font-display text-xl sm:text-2xl font-bold text-white">
+                Statistical Findings &amp; Insights
+              </h3>
+              <ul className="mt-6 space-y-3">
+                {project.learnings.map((lrn, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-slate-steel">
+                    <span className="font-mono text-xs text-ping font-semibold shrink-0 mt-0.5">
+                      0{idx + 1}.
+                    </span>
+                    <span>{lrn}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonial Card (if present) */}
+        {project.testimonial && (
+          <section className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
+            <div className="rounded-3xl border border-ping/30 bg-gradient-to-br from-boeing/20 via-navy-950/80 to-midnight/80 p-8 text-center shadow-xl backdrop-blur-xl sm:p-12">
+              <div className="flex justify-center gap-1 text-amber-signal mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-5 w-5 fill-amber-signal text-amber-signal" />
+                ))}
+              </div>
+              <p className="font-display text-lg sm:text-2xl font-semibold leading-relaxed text-white italic">
+                &ldquo;{project.testimonial.quote}&rdquo;
+              </p>
+              <p className="mt-6 font-mono text-xs font-semibold uppercase tracking-widest text-ping">
+                {project.testimonial.author} · {project.testimonial.title}, {project.brand}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* Prev / Next Navigation & CTA */}
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 pt-8">
+            <Link
+              href={`/case-studies/${prevProject.slug}`}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-xs text-silver hover:border-ping hover:text-white transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Previous: [{prevProject.number}] {prevProject.brand}
+            </Link>
+
+            <MagneticButton href="#contact" variant="primary">
+              Scale Your Brand Past 5x ROAS <ArrowRight className="h-4 w-4" />
+            </MagneticButton>
+
+            <Link
+              href={`/case-studies/${nextProject.slug}`}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-xs text-silver hover:border-ping hover:text-white transition-colors"
+            >
+              Next: [{nextProject.number}] {nextProject.brand} <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
         </section>
       </main>

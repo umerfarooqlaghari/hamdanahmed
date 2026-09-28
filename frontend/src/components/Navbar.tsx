@@ -1,353 +1,227 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { ArrowRight, Menu, TrendingUp, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { MagneticButton } from "@/components/ui/MagneticButton";
+import { cn } from "@/lib/cn";
 
-interface NavbarProps {
+export type NavId = "top" | "case-studies" | "services" | "journey" | "skills" | "reviews" | "contact";
+
+const navLinks: { id: NavId; label: string; href: string }[] = [
+  { id: "top", label: "Home", href: "/#top" },
+  { id: "case-studies", label: "Case Studies", href: "/#case-studies" },
+  { id: "services", label: "Capabilities", href: "/#services" },
+  { id: "journey", label: "Journey", href: "/#journey" },
+  { id: "skills", label: "Skills", href: "/#skills" },
+  { id: "reviews", label: "Reviews", href: "/#reviews" },
+  { id: "contact", label: "Contact", href: "/#contact" },
+];
+
+export interface NavbarProps {
   isCaseStudy?: boolean;
 }
 
-export default function Navbar({ isCaseStudy = false }: NavbarProps) {
+export function Navbar({ isCaseStudy }: NavbarProps = {}) {
+  const [active, setActive] = useState<NavId | null>("top");
   const [scrolled, setScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [open, setOpen] = useState(false);
+  const { scrollY } = useScroll();
 
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    setScrolled(y > 24);
+    setHidden(y > 480 && y > prev + 4);
+    if (y < prev - 4) setHidden(false);
+  });
+
+  // Scroll-spy observer
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 30);
+    const ids = ["top", "case-studies", "services", "journey", "skills", "reviews", "contact"];
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id as NavId);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    els.forEach((el) => obs.observe(el));
+
+    return () => {
+      obs.disconnect();
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
+
   return (
-    <header
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 50,
-        backgroundColor: scrolled ? "rgba(244, 244, 246, 0.94)" : "var(--bg-body)",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: "1px solid var(--border-light)",
-        transition: "all 0.25s ease",
-      }}
-    >
-      <div className="site-container">
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            height: "var(--header-h)",
-          }}
+    <>
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: hidden && !open ? -110 : 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 30 }}
+        className="fixed inset-x-0 top-0 z-[60] px-3 pt-3 sm:px-5 sm:pt-4"
+      >
+        <nav
+          aria-label="Primary"
+          className={cn(
+            "relative mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-2xl border px-3 py-2.5 transition-all duration-500 sm:px-4",
+            scrolled || open
+              ? "border-white/10 bg-obsidian/85 shadow-[0_20px_60px_-30px_rgba(0,0,0,0.9)] backdrop-blur-xl"
+              : "border-white/[0.06] bg-obsidian/40 backdrop-blur-md"
+          )}
         >
-          {/* Brand Mark */}
-          <Link
-            href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.875rem",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                backgroundColor: "var(--vermilion)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#FFFFFF",
-                fontFamily: "var(--font-serif)",
-                fontSize: "1.25rem",
-                fontWeight: 900,
-                letterSpacing: "-0.05em",
-              }}
-            >
-              H
-            </div>
-            <div>
-              <div
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "1.15rem",
-                  fontWeight: 800,
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.1,
-                }}
-              >
-                HAMDAN AHMED
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.68rem",
-                  color: "var(--text-muted)",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  marginTop: "2px",
-                }}
-              >
-                AI &amp; Growth Specialist
-              </div>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation Links */}
-          <nav
-            style={{
-              display: "none",
-              alignItems: "center",
-              gap: "2rem",
-            }}
-            className="desktop-nav"
-          >
-            {!isCaseStudy ? (
-              <>
-                <a href="#about" className="nav-link">
-                  ABOUT
-                </a>
-                <a href="#services" className="nav-link">
-                  SERVICES
-                </a>
-                <a href="#case-studies" className="nav-link">
-                  CASE STUDIES
-                </a>
-                <a href="#graphics" className="nav-link">
-                  GRAPHICS
-                </a>
-                <a href="#testimonials" className="nav-link">
-                  REVIEWS
-                </a>
-              </>
-            ) : (
-              <>
-                <Link href="/" className="nav-link">
-                  ← RETURN TO MAIN PORTFOLIO
-                </Link>
-                <Link href="/case-studies/thryve" className="nav-link">
-                  01. THRYVE
-                </Link>
-                <Link href="/case-studies/royal-essence" className="nav-link">
-                  02. ROYAL ESSENCE
-                </Link>
-                <Link href="/case-studies/emerald-wear" className="nav-link">
-                  03. EMERALD WEAR
-                </Link>
-                <Link href="/case-studies/creative-design" className="nav-link">
-                  04. DESIGN GALLERY
-                </Link>
-              </>
-            )}
-          </nav>
-
-          {/* Right Action */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            <div
-              className="availability-badge"
-              style={{
-                display: "none",
-                alignItems: "center",
-                gap: "0.4rem",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.72rem",
-                color: "#166534",
-                backgroundColor: "#DCFCE7",
-                padding: "0.3rem 0.65rem",
-                borderRadius: "999px",
-                border: "1px solid #BBF7D0",
-              }}
-            >
-              <span
-                style={{
-                  width: "6px",
-                  height: "6px",
-                  borderRadius: "50%",
-                  backgroundColor: "#22C55E",
-                  display: "inline-block",
-                  animation: "pulse-green 2s infinite",
-                }}
+          {/* Logo badge with rotating dashed HUD ring */}
+          <a href="/#top" className="group flex items-center gap-3" aria-label="Hamdan Ahmed — Home">
+            <span className="relative grid h-10 w-10 place-items-center">
+              <motion.span
+                aria-hidden
+                className="absolute -inset-1 rounded-full border border-dashed border-ping/50"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
               />
-              AVAILABLE FOR HIRE
+              <motion.span
+                whileHover={{ rotate: -10, scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 14 }}
+                className="relative grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-boeing to-aero text-white shadow-[0_0_20px_rgba(0,102,204,0.6)]"
+              >
+                <TrendingUp className="h-5 w-5 text-ping" />
+              </motion.span>
+            </span>
+            <span className="leading-none">
+              <span className="block font-display text-[15px] font-semibold tracking-tight text-white">
+                Hamdan Ahmed
+              </span>
+              <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.28em] text-slate-steel">
+                Performance &amp; Growth
+              </span>
+            </span>
+          </a>
+
+          {/* Desktop Nav Links */}
+          <ul className="hidden items-center gap-1 lg:flex">
+            {navLinks.map((l) => {
+              const on = active === l.id;
+              return (
+                <li key={l.id}>
+                  <a
+                    href={l.href}
+                    className={cn(
+                      "relative block px-3 py-1.5 text-xs font-medium tracking-wide transition-colors",
+                      on ? "text-white" : "text-slate-steel hover:text-white"
+                    )}
+                  >
+                    {l.label}
+                    {on && (
+                      <motion.span
+                        layoutId="nav-underline"
+                        className="absolute inset-x-2.5 -bottom-1 h-[2px] rounded-full bg-gradient-to-r from-aero to-ping shadow-[0_0_12px_rgba(56,189,248,0.9)]"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Right Action & Mobile Toggle */}
+          <div className="flex items-center gap-2">
+            <div className="hidden sm:block">
+              <MagneticButton href="/#contact" className="px-5 py-2 text-xs">
+                Book Consultation <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </MagneticButton>
             </div>
-
-            <a
-              href="#contact"
-              className="btn-primary"
-              style={{
-                padding: "0.6rem 1.25rem",
-                fontSize: "0.8rem",
-              }}
-            >
-              Let&apos;s Talk <span>→</span>
-            </a>
-
-            {/* Mobile Hamburger Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="mobile-burger-btn"
-              aria-label="Toggle Navigation Menu"
-              style={{
-                display: "inline-flex",
-                flexDirection: "column",
-                gap: "5px",
-                background: "none",
-                border: "1px solid var(--border-light)",
-                padding: "8px",
-                cursor: "pointer",
-                borderRadius: "4px",
-              }}
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              aria-label={open ? "Close menu" : "Open menu"}
+              className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-white lg:hidden"
             >
-              <span
-                style={{
-                  width: "20px",
-                  height: "2px",
-                  backgroundColor: "var(--text-main)",
-                  display: "block",
-                  transition: "0.2s",
-                  transform: mobileMenuOpen ? "rotate(45deg) translate(5px, 5px)" : "none",
-                }}
-              />
-              <span
-                style={{
-                  width: "20px",
-                  height: "2px",
-                  backgroundColor: "var(--text-main)",
-                  display: "block",
-                  opacity: mobileMenuOpen ? 0 : 1,
-                  transition: "0.2s",
-                }}
-              />
-              <span
-                style={{
-                  width: "20px",
-                  height: "2px",
-                  backgroundColor: "var(--text-main)",
-                  display: "block",
-                  transition: "0.2s",
-                  transform: mobileMenuOpen ? "rotate(-45deg) translate(5px, -5px)" : "none",
-                }}
-              />
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={open ? "x" : "m"}
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </motion.span>
+              </AnimatePresence>
             </button>
           </div>
-        </div>
-      </div>
+        </nav>
+      </motion.header>
 
       {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div
-          style={{
-            backgroundColor: "var(--bg-card)",
-            borderBottom: "2px solid var(--vermilion)",
-            padding: "1.5rem",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1.25rem",
-            }}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex flex-col justify-between bg-obsidian/95 px-6 pb-12 pt-28 backdrop-blur-2xl lg:hidden"
           >
-            {!isCaseStudy ? (
-              <>
-                <a
-                  href="#about"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  01. ABOUT &amp; SKILLS
-                </a>
-                <a
-                  href="#services"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  02. SERVICES &amp; EXPERTISE
-                </a>
-                <a
-                  href="#case-studies"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  03. PERFORMANCE CASE STUDIES
-                </a>
-                <a
-                  href="#graphics"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  04. GRAPHIC DESIGN
-                </a>
-                <a
-                  href="#testimonials"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  05. CLIENT TESTIMONIALS
-                </a>
-                <a
-                  href="#contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                  style={{ color: "var(--vermilion)", fontWeight: 700 }}
-                >
-                  06. CONTACT &amp; LET&apos;S TALK →
-                </a>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                  style={{ fontWeight: 700 }}
-                >
-                  ← RETURN TO MAIN PORTFOLIO
-                </Link>
-                <Link
-                  href="/case-studies/thryve"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  01. THRYVE FASHION
-                </Link>
-                <Link
-                  href="/case-studies/royal-essence"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  02. ROYAL ESSENCE PERFUME
-                </Link>
-                <Link
-                  href="/case-studies/emerald-wear"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  03. EMERALD WEAR JEWELLERY
-                </Link>
-                <Link
-                  href="/case-studies/creative-design"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  04. CREATIVE DESIGN GALLERY
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+            <div aria-hidden className="absolute inset-0 bg-grid opacity-30" />
+            <div aria-hidden className="absolute -top-32 right-0 h-96 w-96 rounded-full bg-boeing/30 blur-[120px]" />
 
-    </header>
+            <nav aria-label="Mobile" className="relative flex flex-col gap-2">
+              {navLinks.map((l, i) => (
+                <motion.a
+                  key={l.id}
+                  href={l.href}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, x: -24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -16 }}
+                  transition={{ delay: 0.05 + i * 0.04 }}
+                  className="group flex items-center justify-between border-b border-white/[0.08] py-4"
+                >
+                  <span className="font-display text-2xl font-semibold tracking-tight text-white transition-colors group-hover:text-ping">
+                    {l.label}
+                  </span>
+                  <span className="font-mono text-xs uppercase tracking-widest text-slate-steel group-hover:text-ping">
+                    [ 0{i + 1} ]
+                  </span>
+                </motion.a>
+              ))}
+            </nav>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ delay: 0.3 }}
+              className="relative mt-8 flex flex-col gap-3"
+            >
+              <MagneticButton
+                href="/#contact"
+                onClick={() => setOpen(false)}
+                className="w-full justify-center py-3.5 text-center text-sm"
+              >
+                Scale Your Brand <ArrowRight className="h-4 w-4" />
+              </MagneticButton>
+              <p className="mt-2 text-center font-mono text-[10px] uppercase tracking-[0.24em] text-slate-steel">
+                Direct Growth Engineering · Available Q4
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
+
+export default Navbar;
 

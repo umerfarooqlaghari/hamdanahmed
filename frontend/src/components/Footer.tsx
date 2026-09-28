@@ -1,318 +1,258 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowUp, CheckCircle, Mail, Phone, TrendingUp } from "lucide-react";
+import { PulseDot } from "@/components/ui/PulseDot";
 
-export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+function InstagramIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+
+const services = [
+  { code: "ADS-01", title: "Meta & Facebook Ads Scaling" },
+  { code: "AUD-02", title: "TikTok & Video Acquisition" },
+  { code: "CRT-03", title: "Creative Strategy & UGC" },
+  { code: "CRO-04", title: "Full-Funnel CRO & Landing Pages" },
+  { code: "RET-05", title: "Retention & Email Automation" },
+  { code: "DAT-06", title: "Conversion API & Pixel Setup" },
+];
+
+export function Footer() {
+  const year = 2026;
 
   return (
-    <footer
-      style={{
-        backgroundColor: "var(--bg-card)",
-        borderTop: "1px solid var(--border-light)",
-        paddingTop: "4.5rem",
-        paddingBottom: "3rem",
-        position: "relative",
-      }}
-    >
-      <div className="site-container">
-        {/* Top Editorial Row */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "3rem",
-            marginBottom: "4rem",
-          }}
-        >
-          {/* Col 1: Identity */}
+    <footer className="relative overflow-hidden bg-navy-900 text-silver">
+      <div aria-hidden className="absolute inset-0 bg-grid opacity-25" />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ping/50 to-transparent"
+      />
+
+      <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-20 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          {/* Brand Column */}
           <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                marginBottom: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  width: "32px",
-                  height: "32px",
-                  backgroundColor: "var(--vermilion)",
-                  color: "#FFFFFF",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: "var(--font-serif)",
-                  fontWeight: 900,
-                  fontSize: "1.1rem",
-                }}
-              >
-                H
-              </div>
-              <span
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "1.25rem",
-                  fontWeight: 800,
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                HAMDAN AHMED
+            <div className="flex items-center gap-3.5">
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-boeing to-aero text-white shadow-[0_0_25px_rgba(0,102,204,0.6)]">
+                <TrendingUp className="h-6 w-6 text-ping" />
               </span>
-            </div>
-            <p
-              style={{
-                fontSize: "0.9rem",
-                color: "var(--text-secondary)",
-                lineHeight: 1.6,
-                maxWidth: "340px",
-                marginBottom: "1.5rem",
-              }}
-            >
-              AI Automation &amp; Digital Marketing Specialist. Engineering high-converting Meta Ads
-              campaigns and autonomous workflow architectures for ambitious modern businesses.
-            </p>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                color: "var(--vermilion)",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-              }}
-            >
-              <span
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--vermilion)",
-                  display: "inline-block",
-                }}
-              />
-              LOCATION // PAKISTAN &bull; GLOBAL CLIENTS
-            </div>
-          </div>
-
-          {/* Col 2: Navigation Index */}
-          <div>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--vermilion)",
-                marginBottom: "1.25rem",
-              }}
-            >
-              INDEX &bull; NAVIGATION
-            </div>
-            <ul
-              style={{
-                listStyle: "none",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.82rem",
-              }}
-            >
-              <li>
-                <a href="#about" className="footer-link">
-                  01. ABOUT &amp; BIOGRAPHY
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="footer-link">
-                  02. SERVICES &amp; EXPERTISE
-                </a>
-              </li>
-              <li>
-                <a href="#case-studies" className="footer-link">
-                  03. PERFORMANCE CASE STUDIES
-                </a>
-              </li>
-              <li>
-                <a href="#graphics" className="footer-link">
-                  04. GRAPHIC &amp; AD CREATIVE
-                </a>
-              </li>
-              <li>
-                <a href="#testimonials" className="footer-link">
-                  05. CLIENT TESTIMONIALS
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="footer-link">
-                  06. GET IN TOUCH / BOOKING
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 3: Case Studies Direct */}
-          <div>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--vermilion)",
-                marginBottom: "1.25rem",
-              }}
-            >
-              DETAILED CASE STUDIES
-            </div>
-            <ul
-              style={{
-                listStyle: "none",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.82rem",
-              }}
-            >
-              <li>
-                <Link href="/case-studies/thryve" className="footer-link">
-                  &bull; THRYVE &mdash; 4.95x ROAS (PKR 742K)
-                </Link>
-              </li>
-              <li>
-                <Link href="/case-studies/royal-essence" className="footer-link">
-                  &bull; ROYAL ESSENCE &mdash; 5.3x ROAS (PKR 559K)
-                </Link>
-              </li>
-              <li>
-                <Link href="/case-studies/emerald-wear" className="footer-link">
-                  &bull; EMERALD WEAR &mdash; 4.2x ROAS (594 Orders)
-                </Link>
-              </li>
-              <li>
-                <Link href="/case-studies/creative-design" className="footer-link">
-                  &bull; DESIGN &amp; BRANDING ARCHIVE (16+ Works)
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Col 4: Direct Channels */}
-          <div>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--vermilion)",
-                marginBottom: "1.25rem",
-              }}
-            >
-              DIRECT CONTACT
-            </div>
-            <div style={{ marginBottom: "1rem" }}>
-              <div
-                style={{
-                  fontSize: "0.75rem",
-                  fontFamily: "var(--font-mono)",
-                  color: "var(--text-muted)",
-                  marginBottom: "0.25rem",
-                }}
-              >
-                DIRECT INBOX
+              <div>
+                <p className="font-display text-xl font-semibold text-white">Hamdan Ahmed</p>
+                <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-slate-steel">
+                  Performance &amp; Growth Architect
+                </p>
               </div>
-              <a
-                href="mailto:ThryveDigital@hamdanahmed.com"
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.875rem",
-                  color: "var(--vermilion)",
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  wordBreak: "break-all",
-                }}
-              >
-                ThryveDigital@hamdanahmed.com
-              </a>
             </div>
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1.25rem" }}>
-              <a
-                href="https://www.instagram.com/hamdannahmeddd"
-                target="_blank"
-                rel="noreferrer"
-                className="social-btn"
-                aria-label="Instagram profile"
-              >
-                Instagram ↗
-              </a>
-              <a
-                href="https://wa.me/?text=Hi%20Hamdan,%20I%20would%20like%20to%20discuss%20a%20marketing%20project."
-                target="_blank"
-                rel="noreferrer"
-                className="social-btn"
-                aria-label="WhatsApp chat"
-              >
-                WhatsApp ↗
-              </a>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-slate-steel">
+              Scaling e-commerce brands past 5x ROAS with data-driven Meta &amp; TikTok acquisition, creative testing
+              frameworks, and conversion-optimized sales funnels.
+            </p>
+            <p className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.22em] text-silver backdrop-blur-md">
+              <PulseDot color="signal" /> Accepting 2 New Brands for Q4
+            </p>
+
+            {/* Direct Quick Contact Card */}
+            <div className="mt-6 max-w-sm rounded-2xl border border-white/10 bg-white/[0.03] p-4 backdrop-blur-md">
+              <div className="flex items-center justify-between">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-ping">
+                  Direct Line
+                </p>
+                <span className="flex items-center gap-1 font-mono text-[10px] text-signal">
+                  <CheckCircle className="h-3 w-3" /> WhatsApp Online
+                </span>
+              </div>
+              <div className="mt-3 space-y-2">
+                <a
+                  href="mailto:contact@hamdanahmed.com"
+                  className="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-navy-950/60 px-3 py-2 text-xs text-silver transition-all hover:border-ping/40 hover:bg-white/[0.06]"
+                >
+                  <span className="flex items-center gap-2 font-medium text-white group-hover:text-ping">
+                    <Mail className="h-3.5 w-3.5 text-ping" /> contact@hamdanahmed.com
+                  </span>
+                  <span className="font-mono text-[9px] text-slate-400">Email</span>
+                </a>
+                <a
+                  href="https://wa.me/923000000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-navy-950/60 px-3 py-2 text-xs text-silver transition-all hover:border-ping/40 hover:bg-white/[0.06]"
+                >
+                  <span className="flex items-center gap-2 font-medium text-white group-hover:text-ping">
+                    <Phone className="h-3.5 w-3.5 text-signal" /> Direct WhatsApp
+                  </span>
+                  <span className="font-mono text-[9px] text-slate-400">Priority</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Capabilities */}
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-ping">Capabilities</p>
+            <ul className="mt-5 space-y-2.5">
+              {services.map((s) => (
+                <li key={s.code}>
+                  <a
+                    href="/#services"
+                    className="group inline-flex items-center gap-2 text-xs sm:text-sm text-slate-steel transition-colors hover:text-white"
+                  >
+                    <span className="h-px w-0 bg-ping transition-all duration-300 group-hover:mr-1.5 group-hover:w-2.5" />
+                    {s.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Case Studies & Pages */}
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-ping">Case Studies</p>
+            <ul className="mt-5 space-y-2.5 text-xs sm:text-sm text-slate-steel">
+              <li>
+                <a
+                  href="/case-studies/thryve-scaling"
+                  className="hover:text-white transition-colors block"
+                >
+                  Thryve Apparel · 4.95x ROAS
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/case-studies/royal-essence-scaling"
+                  className="hover:text-white transition-colors block"
+                >
+                  Royal Essence · 5.3x ROAS
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/case-studies/emerald-wear-scaling"
+                  className="hover:text-white transition-colors block"
+                >
+                  Emerald Wear · 4.2x ROAS
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/case-studies/creative-design"
+                  className="hover:text-ping font-medium transition-colors block"
+                >
+                  16 Creative Design Showcase →
+                </a>
+              </li>
+              <li className="pt-2">
+                <a href="/#journey" className="hover:text-white transition-colors">
+                  My Journey &amp; Milestones
+                </a>
+              </li>
+              <li>
+                <a href="/#skills" className="hover:text-white transition-colors">
+                  Growth &amp; Technical Skills
+                </a>
+              </li>
+              <li>
+                <a href="/#reviews" className="hover:text-white transition-colors">
+                  Verified Client Reviews
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Platforms & Ad Channels */}
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-ping">Ad Channels</p>
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {[
+                "Meta Ads",
+                "Instagram CBO",
+                "TikTok Ads",
+                "Shopify Plus",
+                "Klaviyo",
+                "n8n AI Agents",
+                "GA4 / CAPI",
+                "Figma",
+              ].map((p) => (
+                <span
+                  key={p}
+                  className="rounded-md border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-silver"
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
+            <div className="mt-6 space-y-1.5">
+              <p className="font-mono text-[9px] uppercase tracking-wider text-slate-400">Headquarters</p>
+              <p className="text-xs text-white">Karachi, Pakistan · Serving Global Brands</p>
             </div>
           </div>
         </div>
 
-        {/* Hairline Divider */}
-        <div className="hairline-divider" style={{ marginBottom: "2.5rem" }} />
-
-        {/* Bottom Bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            gap: "1.5rem",
-          }}
+        {/* Giant Watermark wordmark */}
+        <motion.p
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 60, damping: 18 }}
+          aria-hidden
+          className="pointer-events-none mt-16 select-none bg-gradient-to-b from-white/15 to-white/0 bg-clip-text text-center whitespace-nowrap font-display text-[13vw] font-bold leading-none tracking-tighter text-transparent"
         >
-          <div
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.75rem",
-              color: "var(--text-muted)",
-              letterSpacing: "0.04em",
-            }}
-          >
-            &copy; {new Date().getFullYear()} HAMDAN AHMED. ALL RIGHTS RESERVED. DESIGNED WITH SWISS EDITORIAL PRECISION.
-          </div>
+          HAMDAN AHMED
+        </motion.p>
 
-          <button
-            onClick={scrollToTop}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              background: "none",
-              border: "1px solid var(--border-light)",
-              padding: "0.45rem 1rem",
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.75rem",
-              color: "var(--text-main)",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            className="back-to-top"
+        {/* Bottom bar */}
+        <div className="mt-6 flex flex-col items-start justify-between gap-4 border-t border-white/10 pt-6 text-xs text-slate-steel sm:flex-row sm:items-center">
+          <p>© {year} Hamdan Ahmed. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="text-slate-steel transition-colors hover:text-ping"
+            >
+              <LinkedinIcon className="h-4 w-4" />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="text-slate-steel transition-colors hover:text-ping"
+            >
+              <InstagramIcon className="h-4 w-4" />
+            </a>
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em]">
+              Performance · Data · Growth
+            </span>
+          </div>
+          <a
+            href="/#top"
+            className="group inline-flex items-center gap-2 rounded-full border border-white/10 px-3.5 py-1.5 text-silver transition-colors hover:border-ping/50 hover:text-white"
           >
-            TOP OF PAGE <span>↑</span>
-          </button>
+            Back to top <ArrowUp className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5" />
+          </a>
         </div>
       </div>
-
     </footer>
   );
 }
+
+export default Footer;
 

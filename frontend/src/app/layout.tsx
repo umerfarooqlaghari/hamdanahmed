@@ -1,57 +1,56 @@
-import type { Metadata } from "next";
-import { Playfair_Display, Plus_Jakarta_Sans, Caveat, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const serifFont = Playfair_Display({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+const inter = localFont({
+  src: "./fonts/Inter-Variable.woff2",
+  variable: "--font-inter",
+  weight: "100 900",
   display: "swap",
 });
 
-const sansFont = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+const grotesk = localFont({
+  src: "./fonts/SpaceGrotesk-Variable.woff2",
+  variable: "--font-grotesk",
+  weight: "300 700",
   display: "swap",
 });
 
-const scriptFont = Caveat({
-  variable: "--font-script",
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  display: "swap",
-});
-
-const monoFont = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+const jetbrains = localFont({
+  src: "./fonts/JetBrainsMono-Variable.woff2",
+  variable: "--font-jetbrains",
+  weight: "100 800",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Hamdan Ahmed | AI Automation & Digital Marketing Specialist",
+  title: {
+    default: "Hamdan Ahmed — Performance Marketing & Growth Architecture",
+    template: "%s · Hamdan Ahmed",
+  },
   description:
-    "Portfolio of Hamdan Ahmed — AI Automation & Digital Marketing Specialist. Scaling e-commerce brands with full-funnel Meta Ads, AI agents, and n8n workflow automation.",
+    "Performance Marketer, Meta Ads Specialist, & Growth Architect. Scaling e-commerce brands past 5x ROAS with data-driven paid acquisition, creative strategy, and full-funnel CRO.",
   keywords: [
     "Hamdan Ahmed",
-    "AI Automation",
-    "Digital Marketing",
-    "Meta Ads",
-    "Growth Specialist",
-    "n8n Automation",
-    "AI Agents",
     "Performance Marketing",
-    "Case Studies",
+    "Meta Ads Specialist",
+    "E-Commerce Growth",
+    "ROAS Scaling",
+    "Creative Strategy",
+    "Media Buying",
+    "Conversion Rate Optimization",
   ],
   openGraph: {
-    title: "Hamdan Ahmed | AI Automation & Digital Marketing Specialist",
+    title: "Hamdan Ahmed — Performance Marketing & Growth Architecture",
     description:
-      "Scaling brands with full-funnel Meta Ads, autonomous AI agents, and intelligent workflow automation.",
+      "Scaling brands with full-funnel Meta Ads, precision media buying, and high-converting creative strategy.",
     type: "website",
     url: "https://hamdanahmed.com",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#060B14",
 };
 
 export default function RootLayout({
@@ -62,9 +61,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${serifFont.variable} ${sansFont.variable} ${scriptFont.variable} ${monoFont.variable}`}
+      className={`${inter.variable} ${grotesk.variable} ${jetbrains.variable}`}
     >
-      <body>{children}</body>
+      <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );
 }

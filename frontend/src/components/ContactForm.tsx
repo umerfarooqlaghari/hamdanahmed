@@ -1,334 +1,160 @@
 "use client";
 
 import React, { useState } from "react";
+import { ArrowRight, CheckCircle2, Mail, Send } from "lucide-react";
+import { MagneticButton } from "@/components/ui/MagneticButton";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
-    service: "Meta Ads Scaling",
-    budget: "$1,000 - $3,000 / month",
+    mobile: "",
+    subject: "",
     message: "",
   });
 
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
-      alert("Please fill in all required fields.");
+    if (!formData.fullName || !formData.email || !formData.message) {
+      alert("Please fill in the required fields: Full Name, Email, and Message.");
       return;
     }
     setStatus("submitting");
 
-    // Simulate clean dispatch with fallback
     setTimeout(() => {
       setStatus("success");
-    }, 900);
+    }, 700);
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "var(--bg-card)",
-        border: "1px solid var(--border-light)",
-        padding: "2.5rem",
-        position: "relative",
-        boxShadow: "0 20px 40px rgba(0,0,0,0.03)",
-      }}
-    >
-      {/* Editorial Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          borderBottom: "1px solid var(--border-light)",
-          paddingBottom: "1.25rem",
-          marginBottom: "2rem",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.75rem",
-              color: "var(--vermilion)",
-              textTransform: "uppercase",
-              letterSpacing: "0.12em",
-              marginBottom: "0.25rem",
-            }}
-          >
-            DISPATCH // INQUIRY FORM
-          </div>
-          <h3
-            style={{
-              fontSize: "1.65rem",
-              fontWeight: 800,
-              fontFamily: "var(--font-serif)",
-            }}
-          >
-            Initiate Collaboration
-          </h3>
-        </div>
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.75rem",
-            color: "var(--text-muted)",
-          }}
-        >
-          [SEC // 06]
-        </span>
-      </div>
-
+    <div className="mx-auto w-full max-w-3xl">
       {status === "success" ? (
-        <div
-          style={{
-            padding: "3rem 1.5rem",
-            textAlign: "center",
-            backgroundColor: "var(--vermilion-subtle)",
-            border: "1px solid var(--vermilion-border)",
-          }}
-        >
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              borderRadius: "50%",
-              backgroundColor: "var(--vermilion)",
-              color: "#FFFFFF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "0 auto 1.25rem auto",
-              fontSize: "1.5rem",
-              fontWeight: 800,
-            }}
-          >
-            ✓
+        <div className="rounded-3xl border border-ping/40 bg-midnight/90 p-8 text-center shadow-[0_20px_80px_-20px_rgba(0,102,204,0.5)] backdrop-blur-xl sm:p-12">
+          <div className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-2xl border border-signal/40 bg-signal/15 text-signal shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+            <CheckCircle2 className="h-8 w-8" />
           </div>
-          <h4
-            style={{
-              fontSize: "1.5rem",
-              fontFamily: "var(--font-serif)",
-              marginBottom: "0.5rem",
-            }}
-          >
-            Transmission Received
-          </h4>
-          <p
-            style={{
-              fontSize: "0.95rem",
-              color: "var(--text-secondary)",
-              maxWidth: "460px",
-              margin: "0 auto 1.5rem auto",
-            }}
-          >
-            Thank you, {formData.name}. Your project details have been recorded. I typically review
-            inbound briefs and reply within 24 hours.
+          <h3 className="font-display text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Audit Request Received!
+          </h3>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-slate-steel sm:text-base">
+            Thank you, <strong className="text-white">{formData.fullName}</strong>. I will review your store
+            and ad accounts and provide an initial growth audit within 24 hours.
           </p>
-          <a
-            href={`mailto:ThryveDigital@hamdanahmed.com?subject=Inquiry from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(formData.message)}`}
-            className="btn-primary"
-            style={{ fontSize: "0.8rem", padding: "0.7rem 1.5rem" }}
-          >
-            Send Direct Confirmation via Email ↗
-          </a>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <MagneticButton
+              href={`mailto:contact@hamdanahmed.com?subject=${encodeURIComponent(
+                formData.subject || "E-Commerce Growth Inquiry"
+              )}&body=${encodeURIComponent(formData.message)}`}
+              variant="primary"
+            >
+              Direct Email Confirmation <ArrowRight className="h-4 w-4" />
+            </MagneticButton>
+            <MagneticButton
+              onClick={() => {
+                setStatus("idle");
+                setFormData({ fullName: "", email: "", mobile: "", subject: "", message: "" });
+              }}
+              variant="ghost"
+            >
+              Send Another Request
+            </MagneticButton>
+          </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: "1.5rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            {/* Name */}
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+          {/* 2x2 Grid of HUD styled inputs */}
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label
-                htmlFor="name"
-                style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  color: "var(--text-secondary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                01. Your Name *
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-slate-steel">
+                Full Name <span className="text-ping">*</span>
               </label>
               <input
-                id="name"
                 type="text"
                 required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="e.g. Alexander Vance"
-                className="editorial-input"
+                placeholder="Hamdan Ahmed"
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                className="w-full rounded-xl border border-white/10 bg-obsidian/80 px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors focus:border-ping focus:bg-obsidian focus:outline-none focus:ring-1 focus:ring-ping backdrop-blur-md"
               />
             </div>
-
-            {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  color: "var(--text-secondary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                02. Email Address *
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-slate-steel">
+                Email Address <span className="text-ping">*</span>
               </label>
               <input
-                id="email"
                 type="email"
                 required
+                placeholder="brand@domain.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="name@company.com"
-                className="editorial-input"
+                className="w-full rounded-xl border border-white/10 bg-obsidian/80 px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors focus:border-ping focus:bg-obsidian focus:outline-none focus:ring-1 focus:ring-ping backdrop-blur-md"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-slate-steel">
+                Mobile / WhatsApp
+              </label>
+              <input
+                type="tel"
+                placeholder="+92 300 1234567"
+                value={formData.mobile}
+                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                className="w-full rounded-xl border border-white/10 bg-obsidian/80 px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors focus:border-ping focus:bg-obsidian focus:outline-none focus:ring-1 focus:ring-ping backdrop-blur-md"
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-slate-steel">
+                Monthly Ad Spend or Store URL
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. PKR 500K/mo · yourstore.com"
+                value={formData.subject}
+                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                className="w-full rounded-xl border border-white/10 bg-obsidian/80 px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors focus:border-ping focus:bg-obsidian focus:outline-none focus:ring-1 focus:ring-ping backdrop-blur-md"
               />
             </div>
           </div>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-              gap: "1.5rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            {/* Service */}
-            <div>
-              <label
-                htmlFor="service"
-                style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  color: "var(--text-secondary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                03. Core Objective / Service
-              </label>
-              <select
-                id="service"
-                value={formData.service}
-                onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                className="editorial-input"
-              >
-                <option value="Meta Ads Scaling">Meta Ads Scaling (Facebook &amp; Instagram)</option>
-                <option value="AI Agents & Voice Automation">AI Agents &amp; Autonomous Voice Bots</option>
-                <option value="n8n Workflow Automation">n8n / Make Workflow Automation</option>
-                <option value="Brand Design & Creative Ad Direction">Brand Design &amp; Creative Ad Direction</option>
-                <option value="Complete E-Commerce Growth Infrastructure">Complete Growth &amp; Automation System</option>
-              </select>
-            </div>
-
-            {/* Budget */}
-            <div>
-              <label
-                htmlFor="budget"
-                style={{
-                  display: "block",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  color: "var(--text-secondary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                04. Estimated Monthly Budget
-              </label>
-              <select
-                id="budget"
-                value={formData.budget}
-                onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                className="editorial-input"
-              >
-                <option value="Under $1,000 / month">Under $1,000 / PKR 250K</option>
-                <option value="$1,000 - $3,000 / month">$1,000 - $3,000 / PKR 250K - 750K</option>
-                <option value="$3,000 - $7,500 / month">$3,000 - $7,500 / PKR 750K - 2M</option>
-                <option value="$7,500+ / month">$7,500+ / PKR 2M+</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Message */}
-          <div style={{ marginBottom: "2rem" }}>
-            <label
-              htmlFor="message"
-              style={{
-                display: "block",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                color: "var(--text-secondary)",
-                marginBottom: "0.5rem",
-              }}
-            >
-              05. Project Context &amp; Key Goals *
+          {/* Full Width Message Area */}
+          <div>
+            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-slate-steel">
+              Current Bottleneck &amp; Revenue Goals <span className="text-ping">*</span>
             </label>
             <textarea
-              id="message"
               required
-              rows={4}
+              rows={5}
+              placeholder="Tell me about your product, current ROAS/CPA, and where you'd like to scale in the next 90 days..."
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              placeholder="Tell me about your current revenue, current ads/automation stack, and what you aim to achieve..."
-              className="editorial-input"
-              style={{ resize: "vertical" }}
+              className="w-full rounded-xl border border-white/10 bg-obsidian/80 px-4 py-3 text-sm text-white placeholder-slate-500 transition-colors focus:border-ping focus:bg-obsidian focus:outline-none focus:ring-1 focus:ring-ping backdrop-blur-md resize-y"
             />
           </div>
 
-          {/* Submit */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "1rem",
-            }}
-          >
-            <button
+          {/* Centered Submit Button */}
+          <div className="pt-2 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-slate-steel">
+              🔒 Confidential review · No agency sales reps
+            </p>
+            <MagneticButton
               type="submit"
               disabled={status === "submitting"}
-              className="btn-primary"
-              style={{ width: "100%", maxWidth: "260px" }}
+              variant="primary"
+              className="w-full sm:w-auto px-8 py-3.5"
             >
-              {status === "submitting" ? "Transmitting..." : "Send Dispatch →"}
-            </button>
-            <div
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.72rem",
-                color: "var(--text-muted)",
-              }}
-            >
-              DIRECT DISPATCH: ThryveDigital@hamdanahmed.com
-            </div>
+              {status === "submitting" ? (
+                "Processing Request..."
+              ) : (
+                <>
+                  Request Growth Audit <Send className="h-4 w-4" />
+                </>
+              )}
+            </MagneticButton>
           </div>
         </form>
       )}
-
     </div>
   );
 }
-

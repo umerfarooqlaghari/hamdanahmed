@@ -1,1208 +1,1013 @@
-import React from "react";
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  BarChart3,
+  Bot,
+  CheckCircle2,
+  Cpu,
+  ExternalLink,
+  Flame,
+  Layers,
+  Mail,
+  Palette,
+  Phone,
+  Rocket,
+  ShieldCheck,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  Workflow,
+  Zap,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import React, { useState } from "react";
 import ContactForm from "@/components/ContactForm";
-import {
-  CASE_STUDIES,
-  GRAPHIC_DESIGN_WORKS,
-  SERVICES,
-  SKILLS_LIST,
-  TESTIMONIALS,
-} from "@/data/portfolioData";
+import { Footer } from "@/components/layout/Footer";
+import { GrowthEngineSvg, MarketingConsoleContainer } from "@/components/GrowthEngineSvg";
+import { Navbar } from "@/components/Navbar";
+import { MagneticButton } from "@/components/ui/MagneticButton";
+import { Modal } from "@/components/ui/Modal";
+import { PulseDot } from "@/components/ui/PulseDot";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { TiltCard } from "@/components/ui/TiltCard";
+import { CASE_STUDIES } from "@/data/portfolioData";
+import { cn } from "@/lib/cn";
+
+// 4 Strategic Growth Pillars (Replaces crowded numeric band)
+const GROWTH_PILLARS = [
+  {
+    icon: Target,
+    code: "PIL-01",
+    title: "Algorithmic Media Buying",
+    desc: "Advantage+ CBO budget scaling with predictive bid cap controls.",
+  },
+  {
+    icon: Sparkles,
+    code: "PIL-02",
+    title: "Creative Sandboxing",
+    desc: "Rapid dynamic creative testing across 3-second hooks and static carousels.",
+  },
+  {
+    icon: Zap,
+    code: "PIL-03",
+    title: "Full-Funnel CRO",
+    desc: "Zero-friction Shopify checkout optimization and high-AOV bundle architecture.",
+  },
+  {
+    icon: ShieldCheck,
+    code: "PIL-04",
+    title: "Lossless Attribution",
+    desc: "Server-side Meta Conversions API (CAPI) and GA4 cohort tracking.",
+  },
+];
+
+// Marquee ticker items with vector diamonds
+const TICKER_ITEMS = [
+  { code: "META-01", text: "CBO ALGORITHMIC SCALING" },
+  { code: "UGC-02", text: "DIRECT-RESPONSE CREATIVE TESTING" },
+  { code: "CAPI-03", text: "LOSSLESS SERVER-SIDE ATTRIBUTION" },
+  { code: "CRO-04", text: "FRICTIONLESS CHECKOUT FUNNELS" },
+  { code: "TIKTOK-05", text: "SHORT-FORM VIDEO SPARK ADS" },
+  { code: "AI-06", text: "AUTONOMOUS MARKETING AGENTS" },
+  { code: "KLAVIYO-07", text: "LIFECYCLE RETENTION AUTOMATION" },
+];
+
+// Key Performance Capabilities
+const CAPABILITIES = [
+  {
+    id: "meta-ads",
+    icon: Target,
+    code: "ADS-01",
+    title: "Meta & Instagram Ads Scaling",
+    category: "Paid Acquisition",
+    summary:
+      "Full-funnel media buying using CBO algorithms, dynamic creative testing (DCT), and predictive bid caps.",
+    detail:
+      "We design airtight audience funnels that isolate cold prospecting, warm retargeting, and high-intent cart recovery. Powered by Meta Conversions API (CAPI) for lossless server-side attribution.",
+    chips: ["CBO / ABO", "CAPI Setup", "Dynamic Creative", "Bid Caps"],
+    deliverables: [
+      "Lossless Meta Conversions API (CAPI) Setup",
+      "Dynamic Creative Testing (24+ weekly iterations)",
+      "Automated Daypart & Budget Scaling Rules",
+      "Real-time Attribution & Cohort Dashboards",
+    ],
+  },
+  {
+    id: "creative-strategy",
+    icon: Palette,
+    code: "CRT-02",
+    title: "Creative Strategy & Direct Response",
+    category: "Creative Direction",
+    summary:
+      "High-converting visual assets engineered specifically to hook attention in the first 3 seconds.",
+    detail:
+      "Creative is the new targeting. We analyze competitors, isolate customer psychological triggers, and produce scroll-stopping static carousels, reaction reels, and unboxing formats.",
+    chips: ["3s Hook Testing", "Static Carousels", "UGC Scripting", "Direct Response"],
+    deliverables: [
+      "16+ Custom Direct-Response Ad Variations",
+      "A/B Split Hook Scripts for Creators",
+      "High-Converting Packaging & Product Graphics",
+      "Weekly Creative Fatigue Audits",
+    ],
+  },
+  {
+    id: "funnel-cro",
+    icon: Zap,
+    code: "CRO-03",
+    title: "Full-Funnel CRO & Landing Pages",
+    category: "Conversion Rate",
+    summary:
+      "Turning ad clicks into paid orders with zero-friction Shopify PDPs, bundle architectures, and checkout flow tuning.",
+    detail:
+      "Traffic without conversion is wasted capital. We audit customer drop-off points, improve page load speeds, test high-urgency checkout elements, and engineer high-AOV bundle offers.",
+    chips: ["Shopify Plus", "Bundle Upsells", "Heatmap Analysis", "Frictionless Checkout"],
+    deliverables: [
+      "Custom Shopify Product Detail Page Wireframes",
+      "Post-Purchase One-Click Upsell Architecture",
+      "Mobile Checkout Speed Optimization (<1.8s)",
+      "Live Heatmap & User Session Tracking",
+    ],
+  },
+  {
+    id: "tiktok-acquisition",
+    icon: Flame,
+    code: "TIK-04",
+    title: "TikTok Ads & Short-Form Video",
+    category: "Viral Discovery",
+    summary:
+      "Tapping into organic virality and Spark Ads to capture younger demographics and expand audience scale.",
+    detail:
+      "We deploy native short-form video strategies built around TikTok trends, authentic customer testimonials, and algorithmic sound hooks to scale cold acquisition cost-effectively.",
+    chips: ["Spark Ads", "Creator Sparking", "Native Sound Hooks", "Broad Prospecting"],
+    deliverables: [
+      "TikTok Pixel & Events API Configuration",
+      "High-Velocity Creator Collaboration Scripts",
+      "Targeted Hashtag & Affinity Audience Arrays",
+      "Weekly Short-Form Creative Sandboxes",
+    ],
+  },
+  {
+    id: "ai-automation",
+    icon: Bot,
+    code: "AUT-05",
+    title: "AI Marketing Agents & Workflows",
+    category: "Intelligent Systems",
+    summary:
+      "Autonomous n8n and Make workflows that handle ad reporting, customer lead routing, and dynamic retargeting.",
+    detail:
+      "We build customized AI agent architectures that monitor ROAS thresholds 24/7, alert on creative fatigue, automatically route high-ticket WhatsApp leads, and trigger post-purchase workflows.",
+    chips: ["n8n Workflows", "Slack Alerts", "Autonomous Agents", "Lead Routing"],
+    deliverables: [
+      "Real-time 24/7 ROAS Deviation Alert Bots",
+      "Automated Shopify to WhatsApp CRM Sync",
+      "Dynamic Customer Tagging & Segmentation",
+      "Custom Multi-Platform Reporting Dashboards",
+    ],
+  },
+  {
+    id: "retention-email",
+    icon: Layers,
+    code: "RET-06",
+    title: "Retention & Klaviyo Lifecycle Architecture",
+    category: "Customer LTV",
+    summary:
+      "Maximizing customer lifetime value through hyper-segmented automated email flows and VIP SMS campaigns.",
+    detail:
+      "Acquisition brings the first order; retention builds the enterprise. We construct high-converting welcome series, abandoned cart recovery, browse abandonment, and VIP loyalty triggers.",
+    chips: ["Klaviyo Flows", "VIP SMS Triggers", "Churn Prevention", "Predictive Reorder"],
+    deliverables: [
+      "7-Part High-Converting Welcome & Story Flow",
+      "Abandoned Cart & Checkout SMS sequences",
+      "Repeat Purchase & VIP Replenishment Automations",
+      "Predictive Re-order Window Segmentation",
+    ],
+  },
+];
+
+// Tools & Ecosystem (Replaces crowded percentage progress bars with clean SVG badges)
+const ECOSYSTEM_STACK = [
+  {
+    name: "Meta Ads Manager",
+    category: "Primary Ad Platform",
+    tag: "Advantage+ CBO",
+    icon: Target,
+    desc: "Algorithmic audience scaling, dynamic creative testing, and automated daypart bidding.",
+  },
+  {
+    name: "TikTok Ads Manager",
+    category: "Short-Form Discovery",
+    tag: "Spark Ads & UGC",
+    icon: Flame,
+    desc: "Viral creator partnerships, sound hooks, and interest targeting for cold acquisition.",
+  },
+  {
+    name: "Shopify Plus",
+    category: "E-Commerce Core",
+    tag: "Checkout & CRO",
+    icon: ShoppingBag,
+    desc: "High-speed PDP architecture, native bundle upsells, and friction-free payment gateways.",
+  },
+  {
+    name: "Meta Conversions API",
+    category: "Server-side Tracking",
+    tag: "Lossless Event Match",
+    icon: ShieldCheck,
+    desc: "Direct gateway server integration preventing mobile browser cookie drop-offs.",
+  },
+  {
+    name: "Klaviyo Lifecycle",
+    category: "Retention & Email",
+    tag: "Automated Flows",
+    icon: Mail,
+    desc: "Predictive reorder flows, VIP SMS triggers, and cart abandonment win-back sequences.",
+  },
+  {
+    name: "n8n AI Agents",
+    category: "Autonomous Systems",
+    tag: "Workflow Logic",
+    icon: Workflow,
+    desc: "Real-time Slack alerts, CRM synchronization, and multi-channel performance logging.",
+  },
+  {
+    name: "Google Analytics 4",
+    category: "Attribution & Data",
+    tag: "Cohort Modeling",
+    icon: BarChart3,
+    desc: "Cross-channel multi-touch attribution, user journey mapping, and conversion modeling.",
+  },
+  {
+    name: "Figma & Creative Suite",
+    category: "Direct-Response Design",
+    tag: "High-Impact Assets",
+    icon: Palette,
+    desc: "Psychological ad angles, high-contrast packaging concepts, and editorial story ads.",
+  },
+];
 
 export default function HomePage() {
+  const [selectedService, setSelectedService] = useState<(typeof CAPABILITIES)[0] | null>(null);
+
   return (
-    <div style={{ minHeight: "100vh", position: "relative" }}>
+    <div className="relative min-h-screen bg-obsidian text-silver selection:bg-aero selection:text-white">
       <Navbar />
 
       <main>
         {/* ========================================================================= */}
-        {/* HERO SECTION — Inspired by Slide 1 (Architectural Vermilion Graphic & Grayscale) */}
+        {/* 1. HERO SECTION — CLEAN ARCHITECTURE WITH ISOMETRIC VECTOR ENGINE */}
         {/* ========================================================================= */}
-        <section
-          style={{
-            position: "relative",
-            paddingTop: "3.5rem",
-            paddingBottom: "4.5rem",
-            borderBottom: "1px solid var(--border-light)",
-            overflow: "hidden",
-            backgroundColor: "var(--bg-body)",
-          }}
-        >
-          <div className="site-container">
-            {/* Top Coordinate Bar */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.75rem",
-                color: "var(--text-muted)",
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                paddingBottom: "1.25rem",
-                borderBottom: "1px solid var(--border-light)",
-                marginBottom: "2.5rem",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>01 // OVERVIEW</span>
-                <span>HAMDAN AHMED ARCHIVE</span>
-              </div>
-              <div>LOC // PAKISTAN (UTC+5) &bull; SCALE WORLDWIDE</div>
+        <section id="top" className="relative isolate overflow-hidden bg-obsidian pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-36 lg:pb-28">
+          {/* Background Blueprint Grid & Radial Atmospheric Glows */}
+          <div aria-hidden className="absolute inset-0 -z-10 bg-grid mask-radial" />
+          <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+            <div className="absolute -left-40 -top-40 h-[600px] w-[600px] rounded-full bg-boeing/30 blur-[140px]" />
+            <div className="absolute right-[-10%] top-[20%] h-[500px] w-[500px] rounded-full bg-aero-bright/15 blur-[140px]" />
+            <div className="absolute bottom-[-20%] left-[30%] h-[400px] w-[680px] rounded-full bg-navy-900/70 blur-[120px]" />
+          </div>
+
+          {/* Animated Scanline Beam */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-full animate-scan">
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-ping/40 to-transparent" />
+              <div className="h-24 w-full bg-gradient-to-b from-ping/[0.04] to-transparent" />
             </div>
+          </div>
 
-            {/* Main Hero Grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3.5rem",
-                alignItems: "center",
-              }}
-            >
-              {/* Left Column: Typography & Positioning */}
-              <div>
-                <div
-                  className="section-meta-tag"
-                  style={{ marginBottom: "1rem" }}
+          <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[1.05fr_1.1fr] lg:gap-10 lg:px-8">
+            {/* Left Column: Clear, Breathable Copy & Vector Badges */}
+            <div className="relative min-w-0">
+              {/* Online Status Pill */}
+              <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                <a
+                  href="#contact"
+                  className="group inline-flex items-center gap-2.5 rounded-full border border-ping/20 bg-ping/[0.06] py-1.5 pl-3 pr-2.5 font-mono text-[10.5px] uppercase tracking-[0.22em] text-ping backdrop-blur-md transition-colors hover:border-ping/40"
                 >
-                  AI AUTOMATION &bull; PERFORMANCE MARKETING
-                </div>
+                  <PulseDot color="signal" />
+                  <span className="text-signal font-semibold">Growth Engine Online</span>
+                  <span className="hidden h-3 w-px bg-ping/30 sm:block" />
+                  <span className="hidden text-silver sm:inline">Direct Founder Review</span>
+                  <span className="grid h-5 w-5 place-items-center rounded-full bg-ping/15 transition-transform group-hover:translate-x-0.5">
+                    <ArrowUpRight className="h-3 w-3" />
+                  </span>
+                </a>
+              </motion.div>
 
-                <h1
-                  style={{
-                    fontSize: "clamp(2.75rem, 5.5vw, 5rem)",
-                    fontWeight: 900,
-                    lineHeight: 1.02,
-                    letterSpacing: "-0.03em",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  GROWTH ENGINEERED THROUGH <span style={{ color: "var(--accent-secondary)" }}>AI &amp; ADS.</span>
-                </h1>
-
-                <p
-                  style={{
-                    fontSize: "1.15rem",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.65,
-                    maxWidth: "540px",
-                    marginBottom: "2.25rem",
-                  }}
-                >
-                  Hi, I am <strong>Hamdan Ahmed</strong>. I combine performance-driven Meta Ads,
-                  autonomous AI agents, and custom n8n workflow automations to scale eCommerce brands
-                  without manual bottlenecks.
-                </p>
-
-                {/* Hero CTAs */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexWrap: "wrap",
-                    gap: "1rem",
-                    marginBottom: "2.5rem",
-                  }}
-                >
-                  <a href="#case-studies" className="btn-primary">
-                    Explore Case Studies ↓
-                  </a>
-                  <a href="#contact" className="btn-secondary">
-                    Initiate Collaboration →
-                  </a>
-                </div>
-
-                {/* Quick Credentials Strip */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "1.5rem",
-                    paddingTop: "1.75rem",
-                    borderTop: "1px solid var(--border-light)",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.78rem",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  <div>
-                    <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸ </span>
-                    Meta Pixel + CAPI Certified
-                  </div>
-                  <div>
-                    <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸ </span>
-                    n8n &amp; Make Workflow Architect
-                  </div>
-                  <div>
-                    <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸ </span>
-                    Autonomous Voice &amp; Chat Agents
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Slide 1 Iconic Vermilion Cutout Graphic with Portrait */}
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: "440px",
-                }}
+              {/* Main Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="mt-6 font-display text-[2.5rem] font-semibold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[clamp(2.75rem,4.1vw,3.75rem)]"
               >
-                {/* Architectural Graphite / Slate Block Motif (Slide 1) */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    right: "10px",
-                    width: "82%",
-                    height: "94%",
-                    background: "linear-gradient(145deg, #27272A 0%, #18181B 100%)",
-                    boxShadow: "0 25px 50px rgba(0, 0, 0, 0.22)",
-                    borderRadius: "4px",
-                    zIndex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    padding: "1.75rem",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.75rem",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "flex-end",
-                    }}
-                  >
-                    <span>HAMDAN AHMED</span>
-                    <span>2026 // ED.</span>
-                  </div>
-                </div>
+                <span className="block">Precision Growth.</span>
+                <span className="block bg-gradient-to-r from-ping via-aero-bright to-[#7aa7ff] bg-clip-text text-transparent">
+                  Rapidly Scaled.
+                </span>
+              </motion.h1>
 
-                {/* Overlaid Grayscale Portrait Card (Direct from Slide 1) */}
-                <div
-                  className="editorial-img-wrap"
-                  style={{
-                    position: "relative",
-                    zIndex: 2,
-                    width: "68%",
-                    maxWidth: "340px",
-                    marginRight: "auto",
-                    backgroundColor: "var(--bg-card)",
-                    border: "2px solid var(--text-main)",
-                    boxShadow: "0 25px 50px rgba(0,0,0,0.15)",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      aspectRatio: "3 / 4",
-                      backgroundColor: "#16161B",
-                    }}
-                  >
-                    <Image
-                      src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1024,fit=crop/wmfBm6kPSFwto7zo/1000123371-DpA2Qkh9ZXgDzsDn.png"
-                      alt="Hamdan Ahmed - AI Automation & Digital Marketing Specialist"
-                      fill
-                      priority
-                      className="editorial-img"
-                      style={{ objectFit: "cover" }}
-                      sizes="(max-width: 768px) 70vw, 360px"
-                    />
-                  </div>
+              {/* Subtext */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="mt-6 max-w-xl text-sm leading-relaxed text-slate-steel sm:text-base lg:text-lg"
+              >
+                Scaling e-commerce brands past profitability plateaus. I architect full-funnel systems combining{" "}
+                <span className="text-silver font-medium">algorithmic Meta &amp; TikTok media buying, dynamic creative testing</span>, and{" "}
+                <span className="text-silver font-medium">zero-friction Shopify checkout funnels</span>.
+              </motion.p>
 
-                  <div
-                    style={{
-                      padding: "1rem 1.25rem",
-                      backgroundColor: "var(--bg-card)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-serif)",
-                          fontWeight: 800,
-                          fontSize: "1.05rem",
-                        }}
-                      >
-                        HAMDAN AHMED
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.68rem",
-                          color: "var(--vermilion)",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Founder &bull; Thryve Digital
-                      </div>
-                    </div>
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.72rem",
-                        backgroundColor: "var(--vermilion)",
-                        color: "#FFFFFF",
-                        padding: "0.2rem 0.5rem",
-                      }}
-                    >
-                      PRO
+              {/* Action Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mt-8 flex flex-wrap items-center gap-3.5"
+              >
+                <MagneticButton href="#contact" variant="primary">
+                  Start a Project <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </MagneticButton>
+                <MagneticButton href="#case-studies" variant="ghost">
+                  Explore Case Studies
+                </MagneticButton>
+              </motion.div>
+
+              {/* Clean SVG Architecture Highlights (Replaces crowded numeric dl) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="mt-10 grid grid-cols-1 gap-2.5 sm:grid-cols-3 max-w-lg border-t border-white/10 pt-6"
+              >
+                {[
+                  { icon: Target, label: "Advantage+ CBO", sub: "Algorithmic Media Buying" },
+                  { icon: Sparkles, label: "Dynamic Creative", sub: "Direct-Response Testing" },
+                  { icon: ShieldCheck, label: "Lossless CAPI", sub: "Server-side Attribution" },
+                ].map((item) => (
+                  <div key={item.label} className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 backdrop-blur-xs">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-ping/20 bg-ping/10 text-ping">
+                      <item.icon className="h-4 w-4" />
                     </span>
+                    <div className="min-w-0 leading-tight">
+                      <p className="font-mono text-[10px] font-semibold text-white truncate">{item.label}</p>
+                      <p className="font-mono text-[8.5px] uppercase tracking-wider text-slate-400 truncate">{item.sub}</p>
+                    </div>
                   </div>
-                </div>
-              </div>
+                ))}
+              </motion.div>
             </div>
 
-            {/* High-Impact Stat Strip (Slide 12-14 style) */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "1.5rem",
-                marginTop: "4rem",
-                paddingTop: "2.5rem",
-                borderTop: "1px solid var(--border-light)",
-              }}
+            {/* Right Column: Clean Isometric SVG Vector Cockpit (Zero cluttered numbers) */}
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.25 }}
+              className="relative min-w-0"
             >
-              <div
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border-light)",
-                  borderTop: "3px solid var(--vermilion)",
-                  padding: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "2.75rem",
-                    fontWeight: 900,
-                    color: "var(--vermilion)",
-                    lineHeight: 1,
-                    marginBottom: "0.4rem",
-                  }}
-                >
-                  5.3x
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Peak Measured ROAS
-                </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
-                  Royal Essence Perfume
-                </div>
-              </div>
+              <MarketingConsoleContainer />
+            </motion.div>
+          </div>
 
-              <div
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border-light)",
-                  borderTop: "3px solid var(--text-main)",
-                  padding: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "2.75rem",
-                    fontWeight: 900,
-                    color: "var(--text-main)",
-                    lineHeight: 1,
-                    marginBottom: "0.4rem",
-                  }}
-                >
-                  PKR 2.0M+
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Tracked Client Revenue
-                </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
-                  Across Meta Ad Funnels
-                </div>
-              </div>
+          {/* Bottom Scroll Cue */}
+          <div className="mt-14 hidden justify-center lg:flex">
+            <a
+              href="#pillars"
+              className="inline-flex flex-col items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-slate-steel transition-colors hover:text-white"
+            >
+              Scroll to explore
+              <ArrowDown className="h-4 w-4 animate-bounce text-ping" />
+            </a>
+          </div>
+        </section>
 
-              <div
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border-light)",
-                  borderTop: "3px solid var(--vermilion)",
-                  padding: "1.5rem",
-                }}
+        {/* ========================================================================= */}
+        {/* 2. CORE GROWTH PILLARS & MARQUEE (CLEAN SVG CARDS, ZERO NUMERIC CLUTTER) */}
+        {/* ========================================================================= */}
+        <section id="pillars" aria-label="Core Pillars" className="relative border-y border-white/[0.06] bg-gradient-to-b from-navy-950 to-obsidian">
+          <div className="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-white/[0.06] sm:grid-cols-2 sm:divide-y-0 sm:divide-x lg:grid-cols-4 px-4 sm:px-6 lg:px-8">
+            {GROWTH_PILLARS.map((pillar, i) => (
+              <motion.div
+                key={pillar.code}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.08, type: "spring", stiffness: 90, damping: 18 }}
+                className="group relative py-7 px-4 sm:py-8 lg:px-6"
               >
-                <div
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "2.75rem",
-                    fontWeight: 900,
-                    color: "var(--vermilion)",
-                    lineHeight: 1,
-                    marginBottom: "0.4rem",
-                  }}
-                >
-                  1.24M+
+                <div className="flex items-center justify-between">
+                  <span className="grid h-10 w-10 place-items-center rounded-xl border border-ping/25 bg-ping/[0.07] text-ping transition-all duration-300 group-hover:bg-ping/15 group-hover:shadow-[0_0_24px_rgba(56,189,248,0.3)]">
+                    <pillar.icon className="h-5 w-5" />
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-steel">
+                    {pillar.code}
+                  </span>
                 </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Ad Impressions Delivered
-                </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
-                  Highly Targeted Audiences
-                </div>
-              </div>
+                <h3 className="mt-4 font-display text-lg font-semibold text-white group-hover:text-ping transition-colors">
+                  {pillar.title}
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-slate-steel">
+                  {pillar.desc}
+                </p>
+                <span className="absolute bottom-0 left-0 h-px w-0 bg-gradient-to-r from-ping to-transparent transition-all duration-700 group-hover:w-2/3" />
+              </motion.div>
+            ))}
+          </div>
 
-              <div
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border-light)",
-                  borderTop: "3px solid var(--text-main)",
-                  padding: "1.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "2.75rem",
-                    fontWeight: 900,
-                    color: "var(--text-main)",
-                    lineHeight: 1,
-                    marginBottom: "0.4rem",
-                  }}
+          {/* Marquee Ticker */}
+          <div className="relative overflow-hidden border-t border-white/[0.06] py-3.5 mask-fade-x">
+            <div className="flex w-max animate-marquee gap-10 hover:[animation-play-state:paused]">
+              {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+                <span
+                  key={`${item.code}-${i}`}
+                  className="flex items-center gap-8 whitespace-nowrap font-mono text-xs uppercase tracking-[0.28em] text-slate-steel"
                 >
-                  100%
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--text-secondary)",
-                  }}
-                >
-                  Automated Pipeline Sync
-                </div>
-                <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
-                  Zero-Leak Lead Workflows
-                </div>
-              </div>
+                  <span className="text-ping/70">{item.code}</span>
+                  <span className="text-silver">{item.text}</span>
+                  <span aria-hidden className="h-1.5 w-1.5 rotate-45 bg-ping/60" />
+                </span>
+              ))}
             </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 01: THE MASTER INDEX — Inspired by Slide 2 */}
+        {/* 3. PROVEN CASE STUDIES SECTION */}
         {/* ========================================================================= */}
-        <section
-          style={{
-            padding: "4.5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-card)",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "3rem",
-                alignItems: "center",
-              }}
-            >
-              {/* Left Side: Index Title with Circular Orange Stamp (Slide 2) */}
-              <div>
-                <div className="section-meta-tag">NAVIGATIONAL MANIFESTO</div>
-                <div
-                  style={{
-                    display: "inline-block",
-                    position: "relative",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  <h2
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "clamp(3.5rem, 7vw, 5.5rem)",
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      letterSpacing: "-0.04em",
-                      position: "relative",
-                      zIndex: 2,
-                    }}
-                  >
-                    INDEX
-                  </h2>
-                  {/* Subtle Gray Stamp behind text */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      width: "80px",
-                      height: "80px",
-                      backgroundColor: "var(--stamp-gray)",
-                      border: "1px solid #D4D4D8",
-                      borderRadius: "50%",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-30%, -50%)",
-                      zIndex: 1,
-                      opacity: 0.9,
-                    }}
-                  />
-                </div>
-                <p
-                  style={{
-                    fontSize: "1rem",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.6,
-                    maxWidth: "360px",
-                  }}
-                >
-                  A systematic directory of core competencies, case studies, operational services, and
-                  technical automation frameworks.
-                </p>
-              </div>
+        <section id="case-studies" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid opacity-40 mask-fade-y" />
+          <div aria-hidden className="absolute left-1/2 top-0 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-boeing/20 blur-[140px]" />
 
-              {/* Right Side: Index Table */}
-              <div
-                style={{
-                  borderLeft: "2px solid var(--border-light)",
-                  paddingLeft: "2.5rem",
-                }}
-              >
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                  {[
-                    { num: "01", label: "ABOUT HAMDAN & EXECUTIVE BIO", href: "#about" },
-                    { num: "02", label: "SKILLS & AUTOMATION STACK", href: "#about" },
-                    { num: "03", label: "MISSION & STRATEGIC VISION", href: "#mission" },
-                    { num: "04", label: "FOUR CORE GROWTH SERVICES", href: "#services" },
-                    { num: "05", label: "META ADS PERFORMANCE CASE STUDIES", href: "#case-studies" },
-                    { num: "06", label: "CREATIVE & GRAPHIC DESIGN ARCHIVE", href: "#graphics" },
-                    { num: "07", label: "VERIFIED CLIENT TESTIMONIALS", href: "#testimonials" },
-                    { num: "08", label: "DIRECT DISPATCH & BOOKING", href: "#contact" },
-                  ].map((item, idx) => (
-                    <a
-                      key={idx}
-                      href={item.href}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "0.85rem 1rem",
-                        backgroundColor: "var(--bg-body)",
-                        border: "1px solid var(--border-light)",
-                        textDecoration: "none",
-                        color: "inherit",
-                        transition: "all 0.2s ease",
-                      }}
-                      className="index-row"
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <SectionHeading
+                index="01"
+                eyebrow="Case Studies"
+                title={
+                  <>
+                    Proven campaigns.{" "}
+                    <span className="text-slate-steel">Measurable breakthroughs.</span>
+                  </>
+                }
+                description="Detailed breakdowns of how structured audience testing, direct-response creative, and full-funnel CRO delivered verifiable growth."
+              />
+
+              <div className="shrink-0">
+                <Link
+                  href="/case-studies/creative-design"
+                  className="inline-flex items-center gap-2 rounded-full border border-ping/30 bg-ping/10 px-4 py-2 font-mono text-xs uppercase tracking-wider text-ping transition-colors hover:bg-ping/20"
+                >
+                  <Sparkles className="h-3.5 w-3.5" /> View 16 Graphic Designs →
+                </Link>
+              </div>
+            </div>
+
+            {/* Case Studies Grid */}
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {CASE_STUDIES.map((study, idx) => (
+                <motion.div
+                  key={study.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ delay: idx * 0.1, type: "spring", stiffness: 80, damping: 18 }}
+                >
+                  <TiltCard className="group h-full rounded-2xl">
+                    <Link
+                      href={`/case-studies/${study.slug}`}
+                      className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-6 text-left transition-colors duration-300 hover:border-ping/40"
                     >
-                      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.78rem",
-                            fontWeight: 700,
-                            color: "var(--vermilion)",
-                          }}
-                        >
-                          {item.num}.
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.82rem",
-                            fontWeight: 600,
-                            letterSpacing: "0.04em",
-                          }}
-                        >
-                          {item.label}
-                        </span>
-                      </div>
+                      {/* Hover Top Shine */}
                       <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.75rem",
-                          color: "var(--text-muted)",
-                        }}
-                      >
-                        ↓
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+                        aria-hidden
+                        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ping/0 to-transparent transition-all duration-500 group-hover:via-ping/70"
+                      />
 
-        {/* ========================================================================= */}
-        {/* SECTION 02: INTRO & BIO — Inspired by Slide 3 & 4 */}
-        {/* ========================================================================= */}
-        <section
-          id="about"
-          style={{
-            padding: "5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            position: "relative",
-          }}
-        >
-          <div className="site-container">
-            {/* Header: "INTRO." with signature line drawing (Slide 3) */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                marginBottom: "3rem",
-                flexWrap: "wrap",
-                gap: "2rem",
-              }}
-            >
-              <div style={{ position: "relative" }}>
-                <div className="section-meta-tag">01 // EXECUTIVE BIOGRAPHY</div>
-                <div style={{ position: "relative", display: "inline-block" }}>
-                  <h2
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "clamp(3.5rem, 6.5vw, 5rem)",
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      letterSpacing: "-0.03em",
-                      position: "relative",
-                      zIndex: 2,
-                    }}
-                  >
-                    INTRO.
-                  </h2>
-                  {/* Subtle geometric circle outline motif (from Slide 3) */}
-                  <span
-                    style={{
-                      position: "absolute",
-                      width: "120px",
-                      height: "120px",
-                      border: "2px solid rgba(216, 109, 104, 0.35)",
-                      borderRadius: "50%",
-                      top: "-20px",
-                      left: "-30px",
-                      zIndex: 1,
-                      pointerEvents: "none",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Script Signature Accent (Slide 3) */}
-              <div
-                style={{
-                  fontFamily: "var(--font-script)",
-                  fontSize: "2.5rem",
-                  color: "var(--text-secondary)",
-                  lineHeight: 1,
-                }}
-              >
-                Hamdan Ahmed
-              </div>
-            </div>
-
-            {/* Bio Narrative & Capabilities Grid */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3.5rem",
-              }}
-            >
-              {/* Bio Narrative */}
-              <div>
-                <p
-                  style={{
-                    fontSize: "1.18rem",
-                    lineHeight: 1.75,
-                    color: "var(--text-main)",
-                    marginBottom: "1.75rem",
-                    fontWeight: 500,
-                  }}
-                >
-                  I’m a digital marketer and AI automation specialist focused on helping businesses grow
-                  smarter, move faster, and eliminate repetitive work.
-                </p>
-
-                <p
-                  style={{
-                    fontSize: "1.05rem",
-                    lineHeight: 1.7,
-                    color: "var(--text-secondary)",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  My work combines digital marketing, lead generation, Meta Ads, and AI-powered
-                  automation to build systems that not only attract potential customers but also help
-                  businesses manage and convert them more efficiently.
-                </p>
-
-                <p
-                  style={{
-                    fontSize: "1.05rem",
-                    lineHeight: 1.7,
-                    color: "var(--text-secondary)",
-                    marginBottom: "2rem",
-                  }}
-                >
-                  I work with AI agents, workflow automation, and digital growth strategies to create
-                  practical solutions for real business problems &mdash; from automating follow-ups and
-                  lead handling to improving marketing performance and customer communication.
-                </p>
-
-                <div
-                  style={{
-                    backgroundColor: "var(--bg-card)",
-                    border: "1px solid var(--border-light)",
-                    borderLeft: "4px solid var(--vermilion)",
-                    padding: "1.25rem 1.5rem",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.75rem",
-                      color: "var(--vermilion)",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                    }}
-                  >
-                    THE MISSION STATEMENT
-                  </span>
-                  <p
-                    style={{
-                      fontSize: "1rem",
-                      fontWeight: 600,
-                      marginTop: "0.35rem",
-                      color: "var(--text-main)",
-                    }}
-                  >
-                    &ldquo;Use the right mix of marketing and AI to help businesses save time, generate
-                    better opportunities, and scale more effectively.&rdquo;
-                  </p>
-                </div>
-              </div>
-
-              {/* Skills & Resume Breakdown — Slide 4 layout */}
-              <div
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border-light)",
-                  padding: "2rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    borderBottom: "1px solid var(--border-light)",
-                    paddingBottom: "0.75rem",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.78rem",
-                      fontWeight: 700,
-                      color: "var(--vermilion)",
-                      letterSpacing: "0.08em",
-                    }}
-                  >
-                    RESUME // QUALIFICATIONS &amp; STACK
-                  </span>
-                  <span
-                    style={{
-                      width: "12px",
-                      height: "12px",
-                      borderRadius: "50%",
-                      backgroundColor: "var(--vermilion)",
-                      display: "inline-block",
-                    }}
-                  />
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-                  {SKILLS_LIST.map((group, idx) => (
-                    <div key={idx}>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.75rem",
-                          color: "var(--text-muted)",
-                          textTransform: "uppercase",
-                          marginBottom: "0.6rem",
-                        }}
-                      >
-                        {group.category}
+                      {/* Header with Code & ROAS Badge */}
+                      <div className="flex items-start justify-between">
+                        <span className="grid h-11 w-11 place-items-center rounded-xl border border-ping/25 bg-ping/[0.07] text-ping transition-all duration-300 group-hover:bg-ping/15 group-hover:shadow-[0_0_24px_rgba(56,189,248,0.35)]">
+                          <TrendingUp className="h-5 w-5" />
+                        </span>
+                        <div className="text-right">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-steel">
+                            [ {study.number} ]
+                          </span>
+                          <span className="block font-mono text-xs font-semibold text-signal">
+                            {study.secondaryStat} ROAS
+                          </span>
+                        </div>
                       </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                        {group.items.map((skill, sIdx) => (
+
+                      {/* Title & Brand */}
+                      <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.24em] text-ping">
+                        {study.brand} · {study.industry}
+                      </p>
+                      <h3 className="mt-2 font-display text-lg font-semibold leading-snug text-white group-hover:text-ping transition-colors">
+                        {study.title}
+                      </h3>
+
+                      <p className="mt-3 flex-1 text-xs leading-relaxed text-slate-steel">
+                        {study.summary}
+                      </p>
+
+                      {/* Deliverable Chips */}
+                      <div className="mt-4 flex flex-wrap gap-1.5">
+                        {study.deliverables.slice(0, 2).map((chip) => (
                           <span
-                            key={sIdx}
-                            style={{
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.75rem",
-                              backgroundColor: "var(--bg-body)",
-                              border: "1px solid var(--border-light)",
-                              padding: "0.35rem 0.75rem",
-                              borderRadius: "2px",
-                            }}
+                            key={chip}
+                            className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-silver/80"
                           >
-                            {skill}
+                            {chip}
                           </span>
                         ))}
                       </div>
+
+                      {/* Footer Link */}
+                      <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-3 text-xs font-medium text-silver">
+                        <span>Inspect Full Case Study</span>
+                        <span className="grid h-7 w-7 place-items-center rounded-full border border-white/10 transition-all duration-300 group-hover:rotate-45 group-hover:border-ping/60 group-hover:bg-ping/10 group-hover:text-ping">
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </span>
+                      </div>
+                    </Link>
+                  </TiltCard>
+                </motion.div>
+              ))}
+
+              {/* 4th Card: Dedicated Creative Design Showcase */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 80, damping: 18 }}
+                className="flex"
+              >
+                <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-2xl border border-aero/40 bg-gradient-to-br from-boeing via-aero to-aero-bright p-6 text-white shadow-xl">
+                  <div aria-hidden className="absolute inset-0 bg-grid opacity-35" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between">
+                      <Palette className="h-7 w-7 text-white" />
+                      <span className="font-mono text-xs uppercase tracking-widest text-white/80">[ 04 ]</span>
                     </div>
+                    <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.24em] text-white/80">
+                      Brand &amp; Creative Lab
+                    </p>
+                    <h3 className="mt-2 font-display text-xl sm:text-2xl font-semibold text-white">
+                      16 Graphic &amp; Ad Creative Showcase
+                    </h3>
+                    <p className="mt-3 text-xs leading-relaxed text-white/90">
+                      High-impact product renders, social ad creatives, packaging concepts, and direct-response
+                      campaign visuals across fashion, supplements, and luxury goods.
+                    </p>
+                  </div>
+                  <Link
+                    href="/case-studies/creative-design"
+                    className="relative mt-7 inline-flex w-fit items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-semibold text-boeing transition-transform hover:translate-x-1"
+                  >
+                    View All 16 Designs <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 4. CAPABILITIES & PERFORMANCE DISCIPLINES */}
+        {/* ========================================================================= */}
+        <section id="services" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid-fine opacity-30 mask-fade-y" />
+          <div aria-hidden className="absolute right-0 top-1/3 h-[500px] w-[500px] rounded-full bg-aero/15 blur-[140px]" />
+
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHeading
+              index="02"
+              eyebrow="Capabilities"
+              title={
+                <>
+                  An end-to-end growth cell —{" "}
+                  <span className="text-slate-steel">from first creative to checkout.</span>
+                </>
+              }
+              description="Six performance disciplines, one accountable team. Pick a capability to inspect its deliverables, strategy, and execution framework."
+            />
+
+            <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {CAPABILITIES.map((cap) => (
+                <TiltCard key={cap.id} className="group h-full rounded-2xl">
+                  <button
+                    onClick={() => setSelectedService(cap)}
+                    className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.05] to-white/[0.01] p-6 text-left transition-colors duration-300 hover:border-ping/40 focus-visible:outline-2 focus-visible:outline-ping"
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ping/0 to-transparent transition-all duration-500 group-hover:via-ping/70"
+                    />
+                    <div className="flex items-start justify-between">
+                      <span className="grid h-11 w-11 place-items-center rounded-xl border border-ping/25 bg-ping/[0.07] text-ping transition-all duration-300 group-hover:bg-ping/15 group-hover:shadow-[0_0_24px_rgba(56,189,248,0.35)]">
+                        <cap.icon className="h-5 w-5" />
+                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-slate-steel">
+                        {cap.code}
+                      </span>
+                    </div>
+
+                    <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.24em] text-ping/80">
+                      {cap.category}
+                    </p>
+                    <h3 className="mt-2 font-display text-lg font-semibold leading-snug text-white">
+                      {cap.title}
+                    </h3>
+                    <p className="mt-2.5 flex-1 text-xs leading-relaxed text-slate-steel">
+                      {cap.summary}
+                    </p>
+
+                    <div className="mt-5 flex flex-wrap gap-1.5">
+                      {cap.chips.map((c) => (
+                        <span
+                          key={c}
+                          className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-silver/80"
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-3 text-xs font-medium text-silver">
+                      <span>Inspect Deliverables</span>
+                      <span className="grid h-7 w-7 place-items-center rounded-full border border-white/10 transition-all duration-300 group-hover:rotate-45 group-hover:border-ping/60 group-hover:bg-ping/10 group-hover:text-ping">
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </button>
+                </TiltCard>
+              ))}
+            </div>
+          </div>
+
+          {/* Modal for Service Inspection */}
+          <Modal open={!!selectedService} onClose={() => setSelectedService(null)} labelledBy="cap-modal-title">
+            {selectedService && (
+              <div className="p-6 sm:p-10">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-12 w-12 place-items-center rounded-xl border border-ping/30 bg-ping/10 text-ping">
+                    <selectedService.icon className="h-6 w-6" />
+                  </span>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-steel">
+                    <p className="text-ping">{selectedService.code}</p>
+                    <p>{selectedService.category}</p>
+                  </div>
+                </div>
+
+                <h3 id="cap-modal-title" className="mt-6 font-display text-2xl sm:text-3xl font-semibold text-white">
+                  {selectedService.title}
+                </h3>
+                <p className="mt-4 text-sm sm:text-base leading-relaxed text-slate-steel">
+                  {selectedService.detail}
+                </p>
+
+                <p className="mt-8 font-mono text-[10px] uppercase tracking-[0.24em] text-ping">
+                  Deliverables &amp; System Specs
+                </p>
+                <ul className="mt-3 grid gap-2.5 sm:grid-cols-2">
+                  {selectedService.deliverables.map((d) => (
+                    <li key={d} className="flex items-start gap-2.5 text-xs sm:text-sm text-silver">
+                      <CheckCircle2 className="h-4 w-4 shrink-0 text-signal mt-0.5" />
+                      <span>{d}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 flex justify-end gap-3 border-t border-white/10 pt-6">
+                  <MagneticButton href="#contact" onClick={() => setSelectedService(null)} variant="primary">
+                    Book Growth Audit <ArrowRight className="h-4 w-4" />
+                  </MagneticButton>
+                </div>
+              </div>
+            )}
+          </Modal>
+        </section>
+
+        {/* ========================================================================= */}
+        {/* 5. HOW WE SCALE (FOUR DISCIPLINED STAGES) */}
+        {/* ========================================================================= */}
+        <section id="process" className="relative overflow-hidden bg-white py-24 text-navy-950 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid-light opacity-70 mask-fade-y" />
+          <div className="relative mx-auto grid max-w-7xl gap-14 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20 lg:px-8">
+            {/* Left Sticky Header */}
+            <div className="lg:sticky lg:top-32 lg:self-start">
+              <SectionHeading
+                tone="light"
+                index="03"
+                eyebrow="How We Scale"
+                title={
+                  <>
+                    One growth pipeline. <span className="text-aero">Four disciplined phases.</span>
+                  </>
+                }
+                description="A continuous growth thread runs from initial ad account diagnostic to aggressive budget scaling — ensuring no revenue is leaked in hand-offs between creative, media buying, and CRO."
+              />
+
+              <div className="mt-10 rounded-2xl border border-slate-200 bg-paper p-6 shadow-sm">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-aero">
+                  Advertising &amp; Analytics Stack
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {[
+                    "Meta Ads Manager",
+                    "TikTok Ads",
+                    "Shopify Plus",
+                    "Klaviyo",
+                    "Google Analytics 4",
+                    "Meta CAPI",
+                    "n8n Workflows",
+                    "Figma",
+                  ].map((tool) => (
+                    <span
+                      key={tool}
+                      className="rounded-md border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs text-navy-950 shadow-xs"
+                    >
+                      {tool}
+                    </span>
                   ))}
                 </div>
               </div>
             </div>
+
+            {/* Right Stages Pipeline */}
+            <ol className="relative space-y-8">
+              {[
+                {
+                  step: "01",
+                  title: "Ad Account & Unit Economics Audit",
+                  summary:
+                    "Deep-dive into historical ad spend, blended ROAS, CAC, conversion leakages, and server-side tracking health.",
+                  deliverable: "Lossless CAPI verification & 90-day scaling roadmap.",
+                },
+                {
+                  step: "02",
+                  title: "Creative Sandboxing & Angle Testing",
+                  summary:
+                    "Deploying Dynamic Creative Testing (DCT) with distinct psychological angles, short-form hooks, and direct-response formats.",
+                  deliverable: "Statistical winner identification with minimum 4.0x ROAS threshold.",
+                },
+                {
+                  step: "03",
+                  title: "CBO Media Buying & Budget Scaling",
+                  summary:
+                    "Migrating validated creative winners into high-capacity Advantage+ Campaign Budget (CBO) scaling ad sets with bid controls.",
+                  deliverable: "Predictable day-to-day revenue volume without ad fatigue.",
+                },
+                {
+                  step: "04",
+                  title: "Full-Funnel CRO & Retention Automation",
+                  summary:
+                    "Tuning Shopify checkout friction, implementing post-purchase upsells, and deploying automated Klaviyo recovery flows.",
+                  deliverable: "Compounded customer LTV and reduced blended CPA.",
+                },
+              ].map((phase) => (
+                <li key={phase.step} className="group relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:border-aero hover:shadow-md">
+                  <div className="flex items-center gap-3">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl bg-boeing font-mono text-sm font-semibold text-white shadow-[0_0_20px_rgba(0,51,160,0.3)]">
+                      {phase.step}
+                    </span>
+                    <h3 className="font-display text-xl font-semibold text-navy-950">
+                      {phase.title}
+                    </h3>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">
+                    {phase.summary}
+                  </p>
+                  <p className="mt-3 font-mono text-xs text-aero">
+                    Deliverable: <span className="text-slate-800 font-sans">{phase.deliverable}</span>
+                  </p>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 03: MISSION & VISION — Inspired by Slide 5 & 6 */}
+        {/* 6. CAREER JOURNEY & TRACK RECORD */}
         {/* ========================================================================= */}
-        <section
-          id="mission"
-          style={{
-            padding: "5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-card)",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3rem",
-              }}
-            >
-              {/* Mission Card (Slide 5) */}
-              <div
-                style={{
-                  border: "1px solid var(--border-light)",
-                  backgroundColor: "var(--bg-body)",
-                  padding: "2.75rem 2.25rem",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Thin Vertical Pale Rose Line (Direct from Slide 5) */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: "2.25rem",
-                    width: "2px",
-                    backgroundColor: "rgba(216, 109, 104, 0.2)",
-                  }}
-                />
+        <section id="journey" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid opacity-30 mask-fade-y" />
 
-                <div style={{ position: "relative", zIndex: 2 }}>
-                  <div className="section-meta-tag">03A // CORE DRIVER</div>
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHeading
+              index="04"
+              eyebrow="My Journey"
+              title={
+                <>
+                  Proven execution.{" "}
+                  <span className="text-slate-steel">Tested in competitive markets.</span>
+                </>
+              }
+              description="A track record built on disciplined media buying, direct-response design, and scalable client growth."
+            />
 
-                  {/* Header with Circular Stamp (Slide 5) */}
-                  <div
-                    style={{
-                      display: "inline-block",
-                      position: "relative",
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    <h2
-                      style={{
-                        fontFamily: "var(--font-serif)",
-                        fontSize: "2.75rem",
-                        fontWeight: 900,
-                        letterSpacing: "-0.02em",
-                        position: "relative",
-                        zIndex: 2,
-                      }}
-                    >
-                      MISSION
-                    </h2>
-                    <span
-                      style={{
-                        position: "absolute",
-                        width: "56px",
-                        height: "56px",
-                        backgroundColor: "var(--stamp-gray)",
-                        border: "1px solid #D4D4D8",
-                        borderRadius: "50%",
-                        top: "50%",
-                        left: "20%",
-                        transform: "translate(-50%, -50%)",
-                        zIndex: 1,
-                        opacity: 0.9,
-                      }}
-                    />
-                  </div>
-
-                  <p
-                    style={{
-                      fontSize: "1.05rem",
-                      color: "var(--text-secondary)",
-                      lineHeight: 1.65,
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    To dismantle the reliance on linear manual labor by replacing chaotic workflows with
-                    intelligent, autonomous growth systems.
-                  </p>
-
-                  <ul
-                    style={{
-                      listStyle: "none",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.85rem",
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.82rem",
-                    }}
-                  >
-                    <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸</span>
-                      Eliminate repetitive manual data entry across marketing stacks
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸</span>
-                      Ensure 100% of generated leads receive instant automated qualification
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸</span>
-                      Maximize ROAS with server-side CAPI attribution and DCT ad structures
-                    </li>
-                  </ul>
+            <div className="mt-14 grid gap-8 lg:grid-cols-2">
+              {/* Column 1: Experience & Milestones */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+                  <Rocket className="h-5 w-5 text-ping" />
+                  <h3 className="font-display text-xl font-semibold text-white">Experience &amp; Agency Roles</h3>
                 </div>
+
+                {[
+                  {
+                    period: "2023 — Present",
+                    role: "Performance Marketing Consultant & Founder",
+                    org: "Thryve Digital",
+                    desc: "Managing high-six-figure monthly ad spend across Meta and TikTok for Pakistani and GCC D2C brands. Architecting end-to-end full-funnel scaling.",
+                  },
+                  {
+                    period: "2022 — 2023",
+                    role: "Senior Media Buyer & Creative Strategist",
+                    org: "Performance Growth Agency",
+                    desc: "Spearheaded creative testing pods, constructed dynamic catalog retargeting, and scaled fashion, footwear, and beauty brands past 8-figure monthly turnover.",
+                  },
+                  {
+                    period: "2021 — 2022",
+                    role: "Digital Marketing Specialist",
+                    org: "E-Commerce Incubator",
+                    desc: "Handled Facebook Ads Manager, audience segmentation, conversion tracking troubleshooting, and direct-response ad copywriting.",
+                  },
+                ].map((item) => (
+                  <div key={item.role} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 hover:border-ping/30 transition-colors">
+                    <span className="font-mono text-xs text-ping tracking-wider">{item.period}</span>
+                    <h4 className="mt-1 font-display text-lg font-semibold text-white">{item.role}</h4>
+                    <p className="font-mono text-xs text-slate-steel">{item.org}</p>
+                    <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-steel">{item.desc}</p>
+                  </div>
+                ))}
               </div>
 
-              {/* Vision Card (Slide 6) */}
-              <div
-                style={{
-                  border: "1px solid var(--border-light)",
-                  backgroundColor: "var(--bg-body)",
-                  padding: "2.75rem 2.25rem",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Thin Vertical Pale Rose Line (Direct from Slide 6) */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    bottom: 0,
-                    left: "2.25rem",
-                    width: "2px",
-                    backgroundColor: "rgba(216, 109, 104, 0.2)",
-                  }}
-                />
-
-                <div style={{ position: "relative", zIndex: 2 }}>
-                  <div className="section-meta-tag">03B // THE FUTURE</div>
-
-                  {/* Header with Circular Stamp (Slide 6) */}
-                  <div
-                    style={{
-                      display: "inline-block",
-                      position: "relative",
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    <h2
-                      style={{
-                        fontFamily: "var(--font-serif)",
-                        fontSize: "2.75rem",
-                        fontWeight: 900,
-                        letterSpacing: "-0.02em",
-                        position: "relative",
-                        zIndex: 2,
-                      }}
-                    >
-                      VISION
-                    </h2>
-                    <span
-                      style={{
-                        position: "absolute",
-                        width: "56px",
-                        height: "56px",
-                        backgroundColor: "var(--stamp-gray)",
-                        border: "1px solid #D4D4D8",
-                        borderRadius: "50%",
-                        top: "50%",
-                        left: "60%",
-                        transform: "translate(-50%, -50%)",
-                        zIndex: 1,
-                        opacity: 0.9,
-                      }}
-                    />
-                  </div>
-
-                  <p
-                    style={{
-                      fontSize: "1.05rem",
-                      color: "var(--text-secondary)",
-                      lineHeight: 1.65,
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    Building modern enterprises where high-intent creative advertising seamlessly feeds
-                    autonomous AI agents to execute sales and customer support 24/7.
-                  </p>
-
-                  <ul
-                    style={{
-                      listStyle: "none",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.85rem",
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.82rem",
-                    }}
-                  >
-                    <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸</span>
-                      AI agents capable of answering complex inquiries and booking meetings
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸</span>
-                      Zero lag between customer intent and business fulfillment
-                    </li>
-                    <li style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                      <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>▸</span>
-                      Scaling eCommerce brands to multi-million revenues on lean headcounts
-                    </li>
-                  </ul>
+              {/* Column 2: Education & Technical Certifications */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+                  <Target className="h-5 w-5 text-ping" />
+                  <h3 className="font-display text-xl font-semibold text-white">Certifications &amp; Education</h3>
                 </div>
+
+                {[
+                  {
+                    period: "2023",
+                    role: "Meta Certified Media Buying Professional",
+                    org: "Meta Blueprint",
+                    desc: "Validated expertise in campaign planning, audience architecture, auction bidding mechanics, CAPI integration, and attribution measurement.",
+                  },
+                  {
+                    period: "2022",
+                    role: "Advanced Google Analytics (GA4) & Tracking",
+                    org: "Google Analytics Academy",
+                    desc: "Proficiency in event-based data streams, custom dimensions, funnel exploration reports, and UTM tracking frameworks.",
+                  },
+                  {
+                    period: "2019 — 2023",
+                    role: "Bachelor's in Business & Digital Strategy",
+                    org: "University Level",
+                    desc: "Core focus on digital consumer psychology, statistical unit economics, financial margins, and commercial scalability.",
+                  },
+                ].map((item) => (
+                  <div key={item.role} className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 hover:border-ping/30 transition-colors">
+                    <span className="font-mono text-xs text-ping tracking-wider">{item.period}</span>
+                    <h4 className="mt-1 font-display text-lg font-semibold text-white">{item.role}</h4>
+                    <p className="font-mono text-xs text-slate-steel">{item.org}</p>
+                    <p className="mt-3 text-xs sm:text-sm leading-relaxed text-slate-steel">{item.desc}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 04: SERVICES / 4 GROWTH PILLARS — Inspired by Slide 7 */}
+        {/* 7. PLATFORM ECOSYSTEM & TECHNICAL STACK (CLEAN SVG CARDS, ZERO NUMERIC BARS) */}
         {/* ========================================================================= */}
-        <section
-          id="services"
-          style={{
-            padding: "5.5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            position: "relative",
-          }}
-        >
-          <div className="site-container">
-            {/* Header: "SERVICES" with Orange Stamp (Slide 7) */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                marginBottom: "3.5rem",
-                flexWrap: "wrap",
-                gap: "2rem",
-              }}
-            >
-              <div>
-                <div className="section-meta-tag">04 // WHAT I DO</div>
-                <div style={{ position: "relative", display: "inline-block" }}>
-                  <h2
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "clamp(3.5rem, 6.5vw, 5rem)",
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      letterSpacing: "-0.03em",
-                      position: "relative",
-                      zIndex: 2,
-                    }}
-                  >
-                    SERVICES
-                  </h2>
+        <section id="skills" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid-fine opacity-25 mask-fade-y" />
+
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHeading
+              index="05"
+              eyebrow="Ecosystem & Tools"
+              title={
+                <>
+                  Platform ecosystem.{" "}
+                  <span className="text-slate-steel">Growth infrastructure.</span>
+                </>
+              }
+              description="A battle-tested stack combining enterprise ad managers, server-side attribution engines, and autonomous workflow bots."
+            />
+
+            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {ECOSYSTEM_STACK.map((item) => (
+                <div
+                  key={item.name}
+                  className="group relative rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 backdrop-blur-md transition-all duration-300 hover:border-ping/40 hover:-translate-y-1"
+                >
                   <span
-                    style={{
-                      position: "absolute",
-                      width: "72px",
-                      height: "72px",
-                      backgroundColor: "var(--stamp-gray)",
-                      border: "1px solid #D4D4D8",
-                      borderRadius: "50%",
-                      top: "50%",
-                      right: "-20px",
-                      transform: "translateY(-50%)",
-                      zIndex: 1,
-                      opacity: 0.9,
-                    }}
+                    aria-hidden
+                    className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ping/0 to-transparent transition-all duration-500 group-hover:via-ping/70"
                   />
+                  <div className="flex items-center justify-between">
+                    <span className="grid h-10 w-10 place-items-center rounded-xl border border-ping/25 bg-ping/[0.07] text-ping transition-all group-hover:bg-ping/15 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    <span className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-ping">
+                      {item.tag}
+                    </span>
+                  </div>
+                  <h4 className="mt-4 font-display text-base font-semibold text-white group-hover:text-ping transition-colors">
+                    {item.name}
+                  </h4>
+                  <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mt-0.5">
+                    {item.category}
+                  </p>
+                  <p className="mt-2 text-xs leading-relaxed text-slate-steel">
+                    {item.desc}
+                  </p>
                 </div>
-              </div>
-
-              <p
-                style={{
-                  fontSize: "1.05rem",
-                  color: "var(--text-secondary)",
-                  maxWidth: "460px",
-                  lineHeight: 1.6,
-                }}
-              >
-                Four integrated disciplines designed to attract qualified attention, nurture intent, and
-                automate end-to-end conversion.
-              </p>
+              ))}
             </div>
+          </div>
+        </section>
 
-            {/* 4 Pillar Grid (Slide 7) */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "2rem",
-              }}
-            >
-              {SERVICES.map((serv, idx) => (
+        {/* ========================================================================= */}
+        {/* 8. CLIENT REVIEWS & VERIFIED TESTIMONIALS */}
+        {/* ========================================================================= */}
+        <section id="reviews" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid opacity-35 mask-fade-y" />
+
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <SectionHeading
+              index="06"
+              eyebrow="Testimonials"
+              title={
+                <>
+                  Trusted by founders.{" "}
+                  <span className="text-slate-steel">Verified campaign results.</span>
+                </>
+              }
+              description="Direct feedback from brand directors and business owners who scaled their stores through our performance frameworks."
+            />
+
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  quote:
+                    "Hamdan understood our goals quickly, communicated clearly, and delivered a structured campaign that gave us complete clarity on our advertising unit economics.",
+                  author: "Eric Watson",
+                  title: "Brand Director",
+                  company: "Thryve Fashion",
+                  stat: "Verified Brand Director",
+                },
+                {
+                  quote:
+                    "His approach was practical, professional, and focused on results. We achieved profitability from week two and scaled with confidence.",
+                  author: "Muhammad Murtaza",
+                  title: "Co-Founder",
+                  company: "Royal Essence",
+                  stat: "Verified Co-Founder",
+                },
+                {
+                  quote:
+                    "The creative testing framework alone saved us months of wasted spend. We went from guessing to systematic scaling in under 30 days.",
+                  author: "Farhan Saeed",
+                  title: "Head of Growth",
+                  company: "Emerald Accessories",
+                  stat: "Verified Head of Growth",
+                },
+              ].map((rev) => (
                 <div
-                  key={idx}
-                  style={{
-                    backgroundColor: "var(--bg-card)",
-                    border: "1px solid var(--border-light)",
-                    padding: "2.25rem 2rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
-                  }}
-                  className="service-card"
+                  key={rev.author}
+                  className="relative flex flex-col justify-between rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6 shadow-lg backdrop-blur-md"
                 >
                   <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "1.25rem",
-                        paddingBottom: "0.75rem",
-                        borderBottom: "1px solid var(--border-light)",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.75rem",
-                          fontWeight: 700,
-                          color: "var(--vermilion)",
-                        }}
-                      >
-                        PILLAR {serv.number}
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.68rem",
-                          color: "var(--text-muted)",
-                          letterSpacing: "0.08em",
-                        }}
-                      >
-                        {serv.tag}
-                      </span>
-                    </div>
-
-                    <h3
-                      style={{
-                        fontSize: "1.45rem",
-                        fontWeight: 800,
-                        marginBottom: "1rem",
-                        lineHeight: 1.25,
-                      }}
-                    >
-                      {serv.title}
-                    </h3>
-
-                    <p
-                      style={{
-                        fontSize: "0.95rem",
-                        color: "var(--text-secondary)",
-                        lineHeight: 1.65,
-                        marginBottom: "1.75rem",
-                      }}
-                    >
-                      {serv.description}
-                    </p>
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.72rem",
-                        color: "var(--vermilion)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        marginBottom: "0.75rem",
-                      }}
-                    >
-                      KEY CAPABILITIES:
-                    </div>
-                    <ul
-                      style={{
-                        listStyle: "none",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                        fontSize: "0.85rem",
-                        color: "var(--text-main)",
-                      }}
-                    >
-                      {serv.features.map((feat, fIdx) => (
-                        <li key={fIdx} style={{ display: "flex", alignItems: "flex-start", gap: "0.4rem" }}>
-                          <span style={{ color: "var(--vermilion)", fontWeight: 700 }}>&bull;</span>
-                          <span>{feat}</span>
-                        </li>
+                    <div className="flex items-center gap-1 text-amber-signal">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-amber-signal text-amber-signal" />
                       ))}
-                    </ul>
+                    </div>
+                    <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-steel italic">
+                      &ldquo;{rev.quote}&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-white/[0.06] pt-4">
+                    <p className="font-display text-sm font-semibold text-white">{rev.author}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                      {rev.title} · {rev.company}
+                    </p>
+                    <span className="mt-2 inline-block rounded-md border border-signal/30 bg-signal/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-signal">
+                      {rev.stat}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -1211,921 +1016,135 @@ export default function HomePage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* SECTION 05: EDITORIAL STATEMENT BANNER — Inspired by Slide 9 */}
+        {/* 9. CONTACT & START A PROJECT (BOEING GRADIENT BACKDROP) */}
         {/* ========================================================================= */}
-        <section
-          style={{
-            backgroundColor: "var(--bg-dark)",
-            color: "#FFFFFF",
-            padding: "6rem 0",
-            position: "relative",
-            overflow: "hidden",
-            borderTop: "1px solid var(--border-dark)",
-            borderBottom: "1px solid var(--border-dark)",
-          }}
-        >
-          {/* Pulsing Vermilion Ring (Direct from Slide 9) */}
-          <div
-            className="quote-ring"
-            style={{
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
+        <section id="contact" className="relative overflow-hidden bg-gradient-to-br from-boeing via-[#0047B3] to-aero py-24 sm:py-32">
+          <div aria-hidden className="absolute inset-0 bg-grid opacity-35" />
+          <div aria-hidden className="absolute -right-32 -top-32 h-[520px] w-[520px] rounded-full bg-aero-bright/40 blur-[140px]" />
+          <div aria-hidden className="absolute -bottom-40 -left-20 h-[480px] w-[480px] rounded-full bg-navy-900/70 blur-[120px]" />
 
-          <div className="site-container" style={{ position: "relative", zIndex: 2 }}>
-            <div
-              style={{
-                maxWidth: "880px",
-                margin: "0 auto",
-                textAlign: "center",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.75rem",
-                  color: "var(--vermilion)",
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  marginBottom: "1.75rem",
-                }}
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto">
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.28em] text-white/90"
               >
-                CORE OPERATIONAL PHILOSOPHY
-              </div>
-
-              <blockquote
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2.2rem, 4.8vw, 4rem)",
-                  fontWeight: 900,
-                  lineHeight: 1.15,
-                  letterSpacing: "-0.02em",
-                  marginBottom: "2rem",
-                }}
+                <span className="rounded border border-white/30 bg-white/10 px-2 py-0.5">07</span>
+                <span className="h-px w-8 bg-white/40" />
+                Contact &amp; Scale Your Brand
+              </motion.p>
+              <motion.h2
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 80, damping: 18 }}
+                className="text-balance mt-5 font-display text-3xl font-semibold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
               >
-                &ldquo;GROWTH IS UNDERSTANDING BEFORE EXECUTION.&rdquo;
-              </blockquote>
-
-              <p
-                style={{
-                  fontSize: "1.15rem",
-                  color: "var(--text-inverse-muted)",
-                  lineHeight: 1.7,
-                  maxWidth: "680px",
-                  margin: "0 auto 2.5rem auto",
-                }}
-              >
-                Too many brands throw ad spend at disjointed funnels without structured testing or
-                backend follow-through. We engineer systems that combine compelling creative hooks with
-                autonomous AI infrastructure so your conversion rates compound over time.
-              </p>
-
-              <div
-                style={{
-                  fontFamily: "var(--font-script)",
-                  fontSize: "2rem",
-                  color: "var(--vermilion)",
-                }}
-              >
-                Hamdan Ahmed &bull; Founder
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 06: LEADER PERSPECTIVE — Inspired by Slide 10 */}
-        {/* ========================================================================= */}
-        <section
-          style={{
-            padding: "5.5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-body)",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3.5rem",
-                alignItems: "center",
-              }}
-            >
-              {/* Grayscale Visual Portrait with Script Watermark (Slide 10) */}
-              <div
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {/* Script Watermark in Background */}
-                <span
-                  style={{
-                    position: "absolute",
-                    fontFamily: "var(--font-script)",
-                    fontSize: "clamp(5rem, 12vw, 9rem)",
-                    color: "rgba(0, 0, 0, 0.04)",
-                    zIndex: 1,
-                    top: "10%",
-                    left: "0",
-                    whiteSpace: "nowrap",
-                    pointerEvents: "none",
-                  }}
-                >
-                  Hamdan Ahmed
+                Ready to scale your store?{" "}
+                <span className="text-white/90 underline decoration-white/30 underline-offset-8">
+                  Let&apos;s build your engine.
                 </span>
-
-                <div
-                  className="editorial-img-wrap"
-                  style={{
-                    position: "relative",
-                    zIndex: 2,
-                    width: "80%",
-                    maxWidth: "360px",
-                    backgroundColor: "var(--bg-card)",
-                    border: "1px solid var(--border-light)",
-                    boxShadow: "0 20px 40px rgba(0,0,0,0.06)",
-                    padding: "1rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      aspectRatio: "1 / 1",
-                      backgroundColor: "#111116",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <Image
-                      src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=1024,fit=crop/wmfBm6kPSFwto7zo/1000123371-DpA2Qkh9ZXgDzsDn.png"
-                      alt="Hamdan Ahmed Leadership"
-                      fill
-                      className="editorial-img"
-                      style={{ objectFit: "cover" }}
-                      sizes="360px"
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginTop: "0.85rem",
-                    }}
-                  >
-                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", fontWeight: 700 }}>
-                      FOUNDER &amp; GROWTH SPECIALIST
-                    </span>
-                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "var(--vermilion)" }}>
-                      ONLINE &bull; ACTIVE
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Founder Statement Narrative */}
-              <div>
-                <div className="section-meta-tag">FOUNDER STATEMENT // LEADER SPEECH</div>
-                <h2
-                  style={{
-                    fontSize: "clamp(2rem, 4vw, 3.25rem)",
-                    fontWeight: 900,
-                    marginBottom: "1.5rem",
-                    lineHeight: 1.12,
-                  }}
-                >
-                  &ldquo;Marketing is No Longer Just Copy and Spend. It is Engineering.&rdquo;
-                </h2>
-                <p
-                  style={{
-                    fontSize: "1.05rem",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.7,
-                    marginBottom: "1.25rem",
-                  }}
-                >
-                  When I partner with an eCommerce or service brand, I don&apos;t simply set up campaigns
-                  and hope the algorithm favors us. We structure the customer journey like a software
-                  system: testing creatives until CPA drops, configuring server-side CAPI tracking to
-                  preserve attribution, and using n8n to ensure leads are contacted within seconds.
-                </p>
-                <p
-                  style={{
-                    fontSize: "1.05rem",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.7,
-                    marginBottom: "2rem",
-                  }}
-                >
-                  The brands that win in 2026 and beyond are those that build autonomous leverage. My role
-                  is to build that leverage for you.
-                </p>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "2rem",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  <div>
-                    <div style={{ color: "var(--text-muted)" }}>SPECIALIZATION</div>
-                    <div style={{ fontWeight: 700 }}>Full-Funnel Meta Ads &amp; AI</div>
-                  </div>
-                  <div style={{ width: "1px", height: "30px", backgroundColor: "var(--border-light)" }} />
-                  <div>
-                    <div style={{ color: "var(--text-muted)" }}>FOCUS</div>
-                    <div style={{ fontWeight: 700 }}>Measurable Client ROI</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 07: SELECTED PROJECTS & CASE STUDIES — Inspired by Slide 11-15 */}
-        {/* ========================================================================= */}
-        <section
-          id="case-studies"
-          style={{
-            padding: "5.5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-card)",
-          }}
-        >
-          <div className="site-container">
-            {/* Header: Script Callout "Let's dive into Projects" (Slide 11) */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                marginBottom: "4.5rem",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "var(--font-script)",
-                  fontSize: "clamp(2.5rem, 5vw, 4rem)",
-                  color: "var(--vermilion)",
-                  lineHeight: 1,
-                  marginBottom: "0.5rem",
-                }}
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="mt-6 text-sm sm:text-lg leading-relaxed text-white/80"
               >
-                Let&apos;s dive into Projects
-              </span>
-              <h2
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(2.5rem, 5vw, 4.25rem)",
-                  fontWeight: 900,
-                  letterSpacing: "-0.03em",
-                  lineHeight: 1.05,
-                }}
-              >
-                PROVEN PERFORMANCE CASE STUDIES
-              </h2>
-              <p
-                style={{
-                  fontSize: "1.05rem",
-                  color: "var(--text-secondary)",
-                  maxWidth: "580px",
-                  marginTop: "1rem",
-                }}
-              >
-                Real client data, verified ROAS figures, and detailed breakdowns of our advertising and
-                automation workflows.
-              </p>
+                Send your store URL and current monthly goals directly. I personally audit your creatives, pixel setup,
+                and ad account structure to provide an actionable scaling roadmap.
+              </motion.p>
             </div>
 
-            {/* Case Studies Showcase (Slide 12-15 format) */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "4rem" }}>
-              {CASE_STUDIES.map((project, idx) => (
+            {/* 3 Step Process Bar */}
+            <div className="mt-12 grid gap-4 sm:grid-cols-3 max-w-5xl mx-auto">
+              {[
+                { k: "01", t: "Submit Account & Store URL", d: "Share your product line, store link, and monthly ad budget." },
+                { k: "02", t: "Direct Growth Audit", d: "I review your creatives, pixel setup, drop-offs, and CBO architecture." },
+                { k: "03", t: "90-Day Scaling Blueprint", d: "Clear targets, weekly creative sprint schedule, and profit milestones." },
+              ].map((s) => (
                 <div
-                  key={project.id}
-                  style={{
-                    backgroundColor: "var(--bg-body)",
-                    border: "1px solid var(--border-light)",
-                    padding: "2.5rem",
-                    position: "relative",
-                  }}
-                  className="case-study-showcase"
+                  key={s.k}
+                  className="rounded-2xl border border-white/20 bg-white/[0.08] p-5 backdrop-blur-md"
                 >
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                      gap: "3rem",
-                      alignItems: "center",
-                    }}
-                  >
-                    {/* Left: Metadata & Narrative */}
-                    <div>
-                      {/* Project Header Tag */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "1rem",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.85rem",
-                            fontWeight: 700,
-                            backgroundColor: "var(--vermilion)",
-                            color: "#FFFFFF",
-                            padding: "0.25rem 0.65rem",
-                          }}
-                        >
-                          PROJECT {project.number}
-                        </span>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.78rem",
-                            color: "var(--text-muted)",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {project.industry} &bull; {project.duration}
-                        </span>
-                      </div>
-
-                      {/* Brand Title */}
-                      <h3
-                        style={{
-                          fontSize: "clamp(1.85rem, 3vw, 2.5rem)",
-                          fontWeight: 900,
-                          lineHeight: 1.15,
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {project.brand}
-                      </h3>
-
-                      <p
-                        style={{
-                          fontSize: "1.05rem",
-                          color: "var(--text-secondary)",
-                          lineHeight: 1.65,
-                          marginBottom: "2rem",
-                        }}
-                      >
-                        {project.summary}
-                      </p>
-
-                      {/* Big Metric Box (Slide 12-14 style) */}
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "1fr 1fr",
-                          gap: "1rem",
-                          marginBottom: "2rem",
-                          backgroundColor: "var(--bg-card)",
-                          border: "1px solid var(--border-light)",
-                          padding: "1.25rem",
-                        }}
-                      >
-                        <div>
-                          <div
-                            style={{
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.7rem",
-                              color: "var(--text-muted)",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            {project.heroStatLabel}
-                          </div>
-                          <div
-                            style={{
-                              fontFamily: "var(--font-serif)",
-                              fontSize: "2.25rem",
-                              fontWeight: 900,
-                              color: "var(--vermilion)",
-                              lineHeight: 1.1,
-                            }}
-                          >
-                            {project.heroStat}
-                          </div>
-                        </div>
-
-                        <div>
-                          <div
-                            style={{
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.7rem",
-                              color: "var(--text-muted)",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            {project.secondaryStatLabel}
-                          </div>
-                          <div
-                            style={{
-                              fontFamily: "var(--font-serif)",
-                              fontSize: "2.25rem",
-                              fontWeight: 900,
-                              color: "var(--text-main)",
-                              lineHeight: 1.1,
-                            }}
-                          >
-                            {project.secondaryStat}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Link to Dedicated Case Study Page */}
-                      <Link
-                        href={`/case-studies/${project.slug}`}
-                        className="btn-primary"
-                        style={{ display: "inline-flex" }}
-                      >
-                        Explore Full Case Study &amp; Funnel Strategy →
-                      </Link>
-                    </div>
-
-                    {/* Right: Dashboard Preview Image */}
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        aspectRatio: "16 / 10",
-                        backgroundColor: "#0D0D12",
-                        border: "1px solid var(--border-light)",
-                        overflow: "hidden",
-                        boxShadow: "0 20px 40px rgba(0,0,0,0.08)",
-                      }}
-                    >
-                      <Image
-                        src={project.image}
-                        alt={`${project.brand} Case Study Campaign Data`}
-                        fill
-                        className="editorial-img"
-                        style={{ objectFit: "cover" }}
-                        sizes="(max-width: 768px) 100vw, 550px"
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          padding: "0.75rem 1rem",
-                          background: "rgba(0,0,0,0.8)",
-                          color: "#FFFFFF",
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.72rem",
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <span>{project.brand} // META ADS</span>
-                        <span style={{ color: "var(--vermilion)" }}>VERIFIED REVENUE</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* 4th Feature: Graphic Design Showcase Card */}
-              <div
-                id="graphics"
-                style={{
-                  backgroundColor: "var(--bg-body)",
-                  border: "1px solid var(--border-light)",
-                  borderTop: "4px solid var(--vermilion)",
-                  padding: "2.5rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                    gap: "3rem",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.85rem",
-                          fontWeight: 700,
-                          backgroundColor: "var(--text-main)",
-                          color: "#FFFFFF",
-                          padding: "0.25rem 0.65rem",
-                        }}
-                      >
-                        PROJECT 04
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.78rem",
-                          color: "var(--text-muted)",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        Creative Direction &bull; 16+ Live Assets
-                      </span>
-                    </div>
-
-                    <h3
-                      style={{
-                        fontSize: "clamp(1.85rem, 3vw, 2.5rem)",
-                        fontWeight: 900,
-                        lineHeight: 1.15,
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      GRAPHIC DESIGN &amp; BRAND VISUALS
-                    </h3>
-
-                    <p
-                      style={{
-                        fontSize: "1.05rem",
-                        color: "var(--text-secondary)",
-                        lineHeight: 1.65,
-                        marginBottom: "2rem",
-                      }}
-                    >
-                      Visual design is the highest leverage lever in advertising. Explore our archive of
-                      high-CTR paid social ads, brand identities, event keynotes, and information designs.
-                    </p>
-
-                    <Link
-                      href="/case-studies/creative-design"
-                      className="btn-primary"
-                      style={{ display: "inline-flex" }}
-                    >
-                      Open Full Design Archive (16 Works) →
-                    </Link>
-                  </div>
-
-                  {/* Thumbnail Preview Mosaic */}
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr 1fr",
-                      gap: "0.75rem",
-                    }}
-                  >
-                    {GRAPHIC_DESIGN_WORKS.slice(0, 6).map((item, idx) => (
-                      <Link
-                        key={idx}
-                        href="/case-studies/creative-design"
-                        style={{
-                          position: "relative",
-                          aspectRatio: "1 / 1",
-                          backgroundColor: "#16161B",
-                          overflow: "hidden",
-                          border: "1px solid var(--border-light)",
-                          display: "block",
-                        }}
-                      >
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          sizes="150px"
-                          style={{ objectFit: "cover" }}
-                          className="editorial-img"
-                        />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ========================================================================= */}
-        {/* SECTION 08: TESTIMONIALS — Inspired by Slide 8 */}
-        {/* ========================================================================= */}
-        <section
-          id="testimonials"
-          style={{
-            padding: "5.5rem 0",
-            borderBottom: "1px solid var(--border-light)",
-            backgroundColor: "var(--bg-body)",
-          }}
-        >
-          <div className="site-container">
-            {/* Header: "TEAM / TESTIMONIALS" with Orange Stamp (Slide 8) */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-end",
-                marginBottom: "3.5rem",
-                flexWrap: "wrap",
-                gap: "2rem",
-              }}
-            >
-              <div>
-                <div className="section-meta-tag">05 // CLIENT VALIDATION</div>
-                <div style={{ position: "relative", display: "inline-block" }}>
-                  <h2
-                    style={{
-                      fontFamily: "var(--font-serif)",
-                      fontSize: "clamp(3rem, 6vw, 4.5rem)",
-                      fontWeight: 900,
-                      lineHeight: 1,
-                      letterSpacing: "-0.03em",
-                      position: "relative",
-                      zIndex: 2,
-                    }}
-                  >
-                    TESTIMONIALS
-                  </h2>
-                  <span
-                    style={{
-                      position: "absolute",
-                      width: "64px",
-                      height: "64px",
-                      backgroundColor: "var(--stamp-gray)",
-                      border: "1px solid #D4D4D8",
-                      borderRadius: "50%",
-                      top: "50%",
-                      left: "-15px",
-                      transform: "translateY(-50%)",
-                      zIndex: 1,
-                      opacity: 0.9,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <p
-                style={{
-                  fontSize: "1rem",
-                  color: "var(--text-secondary)",
-                  maxWidth: "460px",
-                  lineHeight: 1.6,
-                }}
-              >
-                Feedback directly from founders and operators who scaled their advertising and automated
-                operations alongside Hamdan.
-              </p>
-            </div>
-
-            {/* Testimonials Cards (Slide 8 style) */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "2.5rem",
-              }}
-            >
-              {TESTIMONIALS.map((t, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    backgroundColor: "var(--bg-card)",
-                    border: "1px solid var(--border-light)",
-                    borderTop: "4px solid var(--vermilion)",
-                    padding: "2.75rem 2.25rem",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.03)",
-                  }}
-                >
-                  <div>
-                    {/* 5-Star Rating & Verified Badge */}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "1.5rem",
-                        paddingBottom: "1rem",
-                        borderBottom: "1px solid var(--border-light)",
-                      }}
-                    >
-                      <div style={{ color: "var(--vermilion)", fontSize: "1.1rem", letterSpacing: "2px" }}>
-                        ★★★★★
-                      </div>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.72rem",
-                          color: "var(--vermilion)",
-                          backgroundColor: "var(--vermilion-subtle)",
-                          padding: "0.2rem 0.5rem",
-                          borderRadius: "2px",
-                        }}
-                      >
-                        VERIFIED CLIENT
-                      </span>
-                    </div>
-
-                    <p
-                      style={{
-                        fontSize: "1.1rem",
-                        lineHeight: 1.7,
-                        color: "var(--text-main)",
-                        fontStyle: "italic",
-                        marginBottom: "2rem",
-                      }}
-                    >
-                      &ldquo;{t.quote}&rdquo;
-                    </p>
-                  </div>
-
-                  <div>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-end",
-                        borderTop: "1px solid var(--border-light)",
-                        paddingTop: "1.25rem",
-                      }}
-                    >
-                      <div>
-                        <div
-                          style={{
-                            fontFamily: "var(--font-serif)",
-                            fontWeight: 800,
-                            fontSize: "1.2rem",
-                          }}
-                        >
-                          {t.client}
-                        </div>
-                        <div
-                          style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.75rem",
-                            color: "var(--text-muted)",
-                            textTransform: "uppercase",
-                          }}
-                        >
-                          {t.role} &bull; {t.project}
-                        </div>
-                      </div>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.75rem",
-                          fontWeight: 700,
-                          color: "var(--vermilion)",
-                        }}
-                      >
-                        {t.highlight}
-                      </span>
-                    </div>
-                  </div>
+                  <span className="font-mono text-xs tracking-[0.2em] text-white/70">{s.k}</span>
+                  <p className="mt-2 text-base font-semibold text-white">{s.t}</p>
+                  <p className="mt-1.5 text-xs leading-relaxed text-white/75">{s.d}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </section>
 
-        {/* ========================================================================= */}
-        {/* SECTION 09: CONTACT / "LET'S TALK" — Inspired by Slide 16 */}
-        {/* ========================================================================= */}
-        <section
-          id="contact"
-          style={{
-            padding: "6rem 0",
-            backgroundColor: "var(--bg-card)",
-            position: "relative",
-          }}
-        >
-          <div className="site-container">
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3.5rem",
-                alignItems: "flex-start",
-              }}
-            >
-              {/* Left Side: Slide 16 Big Vermilion Graphic & Call to Action */}
-              <div>
-                <div className="section-meta-tag">06 // COLLABORATE</div>
-                <h2
-                  style={{
-                    fontFamily: "var(--font-serif)",
-                    fontSize: "clamp(2.75rem, 5.5vw, 4.5rem)",
-                    fontWeight: 900,
-                    lineHeight: 1.05,
-                    letterSpacing: "-0.03em",
-                    marginBottom: "1.5rem",
-                  }}
-                >
-                  LET&apos;S SCALE YOUR BRAND TOGETHER.
-                </h2>
-
-                <p
-                  style={{
-                    fontSize: "1.1rem",
-                    color: "var(--text-secondary)",
-                    lineHeight: 1.65,
-                    marginBottom: "2.5rem",
-                  }}
-                >
-                  Whether you are looking to scale your eCommerce store to 5x+ ROAS with full-funnel Meta
-                  Ads or want to automate manual operations using AI agents and n8n workflows, let&apos;s
-                  construct a tailored growth plan.
-                </p>
-
-                {/* Direct Contact Cards */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                  <div
-                    style={{
-                      padding: "1.25rem",
-                      backgroundColor: "var(--bg-body)",
-                      border: "1px solid var(--border-light)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.72rem",
-                        color: "var(--text-muted)",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      DIRECT EMAIL INBOX
-                    </div>
-                    <a
-                      href="mailto:ThryveDigital@hamdanahmed.com"
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "1rem",
-                        color: "var(--vermilion)",
-                        fontWeight: 700,
-                        textDecoration: "none",
-                      }}
-                    >
-                      ThryveDigital@hamdanahmed.com
-                    </a>
-                  </div>
-
-                  <div
-                    style={{
-                      padding: "1.25rem",
-                      backgroundColor: "var(--bg-body)",
-                      border: "1px solid var(--border-light)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "0.72rem",
-                          color: "var(--text-muted)",
-                          textTransform: "uppercase",
-                        }}
-                      >
-                        COMMUNICATION CHANNELS
-                      </div>
-                      <div style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem", fontWeight: 600 }}>
-                        Instagram &bull; WhatsApp &bull; Zoom
-                      </div>
-                    </div>
-                    <a
-                      href="https://www.instagram.com/hamdannahmeddd"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="pill pill-orange"
-                      style={{ textDecoration: "none" }}
-                    >
-                      @hamdannahmeddd ↗
-                    </a>
-                  </div>
+            {/* Direct Contact Cards */}
+            <div className="mt-10 grid gap-4 sm:grid-cols-3 max-w-5xl mx-auto">
+              <a
+                href="mailto:contact@hamdanahmed.com"
+                className="group rounded-2xl border border-white/25 bg-navy-950/80 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white hover:bg-navy-900 shadow-xl"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="rounded-xl bg-white/10 p-2 text-white group-hover:bg-white/20 transition-colors">
+                    <Mail className="h-5 w-5" />
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 text-white/50 group-hover:text-white" />
                 </div>
-              </div>
+                <p className="mt-4 font-mono text-[10px] uppercase tracking-wider text-slate-400">Direct Email</p>
+                <p className="mt-1 font-display text-sm font-semibold text-white group-hover:text-ping transition-colors break-all">
+                  contact@hamdanahmed.com
+                </p>
+                <p className="mt-1 text-xs text-slate-400">Response within 24 hours</p>
+              </a>
 
-              {/* Right Side: Interactive Dispatch Form */}
+              <a
+                href="https://wa.me/923000000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl border border-white/25 bg-navy-950/80 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white hover:bg-navy-900 shadow-xl"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="rounded-xl bg-signal/20 p-2 text-signal group-hover:bg-signal/30 transition-colors">
+                    <Phone className="h-5 w-5" />
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 text-white/50 group-hover:text-white" />
+                </div>
+                <p className="mt-4 font-mono text-[10px] uppercase tracking-wider text-slate-400">Direct WhatsApp</p>
+                <p className="mt-1 font-display text-sm font-semibold text-white group-hover:text-signal transition-colors">
+                  Priority Founder Channel
+                </p>
+                <p className="mt-1 text-xs text-slate-400">Instant messaging &amp; voice note audits</p>
+              </a>
+
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl border border-white/25 bg-navy-950/80 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white hover:bg-navy-900 shadow-xl"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="rounded-xl bg-[#0A66C2]/20 p-2 text-[#38BDF8] group-hover:bg-[#0A66C2]/30 transition-colors">
+                    <ExternalLink className="h-5 w-5" />
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 text-white/50 group-hover:text-white" />
+                </div>
+                <p className="mt-4 font-mono text-[10px] uppercase tracking-wider text-slate-400">Professional Network</p>
+                <p className="mt-1 font-display text-sm font-semibold text-white group-hover:text-ping transition-colors">
+                  LinkedIn Profile
+                </p>
+                <p className="mt-1 text-xs text-slate-400">Case studies &amp; insights</p>
+              </a>
+            </div>
+
+            {/* Interactive Contact Form */}
+            <div className="mt-12 rounded-3xl border border-white/20 bg-navy-950/90 p-6 sm:p-10 shadow-2xl backdrop-blur-xl max-w-4xl mx-auto">
+              <div className="mb-6 text-center">
+                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ping">
+                  Direct Intake Form
+                </span>
+                <h3 className="mt-1 font-display text-xl sm:text-2xl font-bold text-white">
+                  Book Your Growth Audit
+                </h3>
+              </div>
               <ContactForm />
             </div>
           </div>
@@ -2133,8 +1152,6 @@ export default function HomePage() {
       </main>
 
       <Footer />
-
     </div>
   );
 }
-
