@@ -107,19 +107,19 @@ export default function Navbar({ isCaseStudy = false }: NavbarProps) {
             {!isCaseStudy ? (
               <>
                 <a href="#about" className="nav-link">
-                  01. ABOUT
+                  ABOUT
                 </a>
                 <a href="#services" className="nav-link">
-                  02. SERVICES
+                  SERVICES
                 </a>
                 <a href="#case-studies" className="nav-link">
-                  03. CASE STUDIES
+                  CASE STUDIES
                 </a>
                 <a href="#graphics" className="nav-link">
-                  04. GRAPHICS
+                  GRAPHICS
                 </a>
                 <a href="#testimonials" className="nav-link">
-                  05. REVIEWS
+                  REVIEWS
                 </a>
               </>
             ) : (
