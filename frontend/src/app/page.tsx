@@ -30,7 +30,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import { Footer } from "@/components/layout/Footer";
-import { GrowthEngineSvg, MarketingConsoleContainer } from "@/components/GrowthEngineSvg";
+import { CreativeGrowthStudio } from "@/components/CreativeGrowthStudio";
 import { Navbar } from "@/components/Navbar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Modal } from "@/components/ui/Modal";
@@ -289,9 +289,9 @@ export default function HomePage() {
                   className="group inline-flex items-center gap-2.5 rounded-full border border-ping/20 bg-ping/[0.06] py-1.5 pl-3 pr-2.5 font-mono text-[10.5px] uppercase tracking-[0.22em] text-ping backdrop-blur-md transition-colors hover:border-ping/40"
                 >
                   <PulseDot color="signal" />
-                  <span className="text-signal font-semibold">Growth Engine Online</span>
+                  <span className="text-signal font-semibold">Marketing &amp; Design Studio</span>
                   <span className="hidden h-3 w-px bg-ping/30 sm:block" />
-                  <span className="hidden text-silver sm:inline">Direct Founder Review</span>
+                  <span className="hidden text-silver sm:inline">Exquisite Taste · Algorithmic Scale</span>
                   <span className="grid h-5 w-5 place-items-center rounded-full bg-ping/15 transition-transform group-hover:translate-x-0.5">
                     <ArrowUpRight className="h-3 w-3" />
                   </span>
@@ -305,9 +305,9 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.1 }}
                 className="mt-6 font-display text-[2.5rem] font-semibold leading-[1.04] tracking-tight text-white sm:text-6xl lg:text-[clamp(2.75rem,4.1vw,3.75rem)]"
               >
-                <span className="block">Precision Growth.</span>
-                <span className="block bg-gradient-to-r from-ping via-aero-bright to-[#7aa7ff] bg-clip-text text-transparent">
-                  Rapidly Scaled.
+                <span className="block">Performance Marketing.</span>
+                <span className="block bg-gradient-to-r from-ping via-aero-bright to-[#93b5ff] bg-clip-text text-transparent">
+                  Exquisite Design.
                 </span>
               </motion.h1>
 
@@ -318,9 +318,7 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="mt-6 max-w-xl text-sm leading-relaxed text-slate-steel sm:text-base lg:text-lg"
               >
-                Scaling e-commerce brands past profitability plateaus. I architect full-funnel systems combining{" "}
-                <span className="text-silver font-medium">algorithmic Meta &amp; TikTok media buying, dynamic creative testing</span>, and{" "}
-                <span className="text-silver font-medium">zero-friction Shopify checkout funnels</span>.
+                Marketing Manager &amp; Direct-Response Designer. I bridge high-taste visual storytelling with algorithmic paid media—crafting scroll-stopping creative systems, Meta Advantage+ campaigns, and high-converting Shopify checkout funnels.
               </motion.p>
 
               {/* Action Buttons */}
@@ -343,34 +341,34 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mt-10 grid grid-cols-1 gap-2.5 sm:grid-cols-3 max-w-lg border-t border-white/10 pt-6"
+                className="mt-10 grid grid-cols-1 gap-2.5 sm:grid-cols-3 max-w-xl border-t border-white/10 pt-6"
               >
                 {[
-                  { icon: Target, label: "Advantage+ CBO", sub: "Algorithmic Media Buying" },
-                  { icon: Sparkles, label: "Dynamic Creative", sub: "Direct-Response Testing" },
-                  { icon: ShieldCheck, label: "Lossless CAPI", sub: "Server-side Attribution" },
+                  { icon: Palette, label: "Direct-Response Design", sub: "High-Converting Assets" },
+                  { icon: Target, label: "Advantage+ Media Buying", sub: "Algorithmic Scale" },
+                  { icon: Sparkles, label: "Full-Funnel CRO", sub: "Shopify Conversion Lift" },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 backdrop-blur-xs">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-ping/20 bg-ping/10 text-ping">
+                  <div key={item.label} className="flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-2.5 backdrop-blur-xs transition-colors hover:border-ping/30">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-ping/20 bg-ping/10 text-ping shadow-[0_0_12px_rgba(56,189,248,0.2)]">
                       <item.icon className="h-4 w-4" />
                     </span>
-                    <div className="min-w-0 leading-tight">
+                    <div className="min-w-0 leading-snug">
                       <p className="font-mono text-[10px] font-semibold text-white truncate">{item.label}</p>
-                      <p className="font-mono text-[8.5px] uppercase tracking-wider text-slate-400 truncate">{item.sub}</p>
+                      <p className="font-mono text-[8px] uppercase tracking-wider text-slate-400 truncate">{item.sub}</p>
                     </div>
                   </div>
                 ))}
               </motion.div>
             </div>
 
-            {/* Right Column: Clean Isometric SVG Vector Cockpit (Zero cluttered numbers) */}
+            {/* Right Column: Creative & Growth Studio (Exquisite Design + Performance Marketing) */}
             <motion.div
               initial={{ opacity: 0, y: 40, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.25 }}
               className="relative min-w-0"
             >
-              <MarketingConsoleContainer />
+              <CreativeGrowthStudio />
             </motion.div>
           </div>
 
@@ -1136,17 +1134,7 @@ export default function HomePage() {
             </div>
 
             {/* Interactive Contact Form */}
-            <div className="mt-12 rounded-3xl border border-white/20 bg-navy-950/90 p-6 sm:p-10 shadow-2xl backdrop-blur-xl max-w-4xl mx-auto">
-              <div className="mb-6 text-center">
-                <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ping">
-                  Direct Intake Form
-                </span>
-                <h3 className="mt-1 font-display text-xl sm:text-2xl font-bold text-white">
-                  Book Your Growth Audit
-                </h3>
-              </div>
-              <ContactForm />
-            </div>
+
           </div>
         </section>
       </main>

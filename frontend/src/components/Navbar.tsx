@@ -81,29 +81,27 @@ export function Navbar({ isCaseStudy }: NavbarProps = {}) {
               : "border-white/[0.06] bg-obsidian/40 backdrop-blur-md"
           )}
         >
-          {/* Logo badge with rotating dashed HUD ring */}
+          {/* Logo badge */}
           <a href="/#top" className="group flex items-center gap-3" aria-label="Hamdan Ahmed — Home">
             <span className="relative grid h-10 w-10 place-items-center">
               <motion.span
                 aria-hidden
-                className="absolute -inset-1 rounded-full border border-dashed border-ping/50"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-ping/30 to-boeing/40 blur-sm"
               />
               <motion.span
-                whileHover={{ rotate: -10, scale: 1.05 }}
+                whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 300, damping: 14 }}
-                className="relative grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-boeing to-aero text-white shadow-[0_0_20px_rgba(0,102,204,0.6)]"
+                className="relative grid h-10 w-10 place-items-center rounded-xl border border-white/15 bg-gradient-to-br from-boeing/90 via-midnight to-obsidian text-white shadow-[0_0_20px_rgba(0,102,204,0.4)]"
               >
-                <TrendingUp className="h-5 w-5 text-ping" />
+                <TrendingUp className="h-4.5 w-4.5 text-ping" />
               </motion.span>
             </span>
             <span className="leading-none">
-              <span className="block font-display text-[15px] font-semibold tracking-tight text-white">
+              <span className="block font-display text-[15px] font-semibold tracking-tight text-white group-hover:text-ping transition-colors">
                 Hamdan Ahmed
               </span>
-              <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.28em] text-slate-steel">
-                Performance &amp; Growth
+              <span className="mt-1 block font-mono text-[8.5px] uppercase tracking-[0.26em] text-slate-steel">
+                Marketing Manager &amp; Designer
               </span>
             </span>
           </a>
