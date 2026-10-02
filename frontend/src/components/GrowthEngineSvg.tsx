@@ -1,12 +1,13 @@
 "use client";
 
 export { 
-  CreativeGrowthStudio, 
-  CreativeGrowthStudio as MarketingConsoleContainer, 
-  CreativeGrowthStudio as GrowthEngineSvg 
-} from "@/components/CreativeGrowthStudio";
+  MarketingHeroIllustration,
+  MarketingHeroIllustration as CreativeGrowthStudio, 
+  MarketingHeroIllustration as MarketingConsoleContainer, 
+  MarketingHeroIllustration as GrowthEngineSvg 
+} from "@/components/MarketingHeroIllustration";
 
 export default function GrowthEngineSvgWrapper() {
-  const { CreativeGrowthStudio } = require("@/components/CreativeGrowthStudio");
-  return <CreativeGrowthStudio />;
+  const { MarketingHeroIllustration } = require("@/components/MarketingHeroIllustration");
+  return <MarketingHeroIllustration />;
 }

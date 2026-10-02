@@ -6,15 +6,13 @@ import { useEffect, useState } from "react";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { cn } from "@/lib/cn";
 
-export type NavId = "top" | "case-studies" | "services" | "journey" | "skills" | "reviews" | "contact";
+export type NavId = "top" | "case-studies" | "services" | "journey" | "contact";
 
 const navLinks: { id: NavId; label: string; href: string }[] = [
   { id: "top", label: "Home", href: "/#top" },
   { id: "case-studies", label: "Case Studies", href: "/#case-studies" },
-  { id: "services", label: "Capabilities", href: "/#services" },
-  { id: "journey", label: "Journey", href: "/#journey" },
-  { id: "skills", label: "Skills", href: "/#skills" },
-  { id: "reviews", label: "Reviews", href: "/#reviews" },
+  { id: "services", label: "Capabilities & Stack", href: "/#services" },
+  { id: "journey", label: "Journey & Reviews", href: "/#journey" },
   { id: "contact", label: "Contact", href: "/#contact" },
 ];
 
@@ -38,7 +36,7 @@ export function Navbar({ isCaseStudy }: NavbarProps = {}) {
 
   // Scroll-spy observer
   useEffect(() => {
-    const ids = ["top", "case-studies", "services", "journey", "skills", "reviews", "contact"];
+    const ids = ["top", "case-studies", "services", "journey", "contact"];
     const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
     const obs = new IntersectionObserver(
       (entries) => {

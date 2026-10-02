@@ -89,15 +89,15 @@ export function Footer() {
                   <span className="font-mono text-[9px] text-slate-400">Email</span>
                 </a>
                 <a
-                  href="https://wa.me/923000000000"
+                  href="https://wa.me/923412055383"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center justify-between rounded-lg border border-white/[0.06] bg-navy-950/60 px-3 py-2 text-xs text-silver transition-all hover:border-ping/40 hover:bg-white/[0.06]"
                 >
                   <span className="flex items-center gap-2 font-medium text-white group-hover:text-ping">
-                    <Phone className="h-3.5 w-3.5 text-signal" /> Direct WhatsApp
+                    <Phone className="h-3.5 w-3.5 text-signal" /> +92 341 2055383
                   </span>
-                  <span className="font-mono text-[9px] text-slate-400">Priority</span>
+                  <span className="font-mono text-[9px] text-slate-400">WhatsApp</span>
                 </a>
               </div>
             </div>

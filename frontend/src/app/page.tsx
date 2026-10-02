@@ -30,7 +30,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import ContactForm from "@/components/ContactForm";
 import { Footer } from "@/components/layout/Footer";
-import { CreativeGrowthStudio } from "@/components/CreativeGrowthStudio";
+import { MarketingHeroIllustration } from "@/components/MarketingHeroIllustration";
 import { Navbar } from "@/components/Navbar";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Modal } from "@/components/ui/Modal";
@@ -361,14 +361,14 @@ export default function HomePage() {
               </motion.div>
             </div>
 
-            {/* Right Column: Creative & Growth Studio (Exquisite Design + Performance Marketing) */}
+            {/* Right Column: 3D Isometric Marketing Growth Engine Illustration */}
             <motion.div
               initial={{ opacity: 0, y: 40, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.25 }}
               className="relative min-w-0"
             >
-              <CreativeGrowthStudio />
+              <MarketingHeroIllustration />
             </motion.div>
           </div>
 
@@ -585,14 +585,14 @@ export default function HomePage() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeading
               index="02"
-              eyebrow="Capabilities"
+              eyebrow="Capabilities &amp; Stack"
               title={
                 <>
                   An end-to-end growth cell —{" "}
-                  <span className="text-slate-steel">from first creative to checkout.</span>
+                  <span className="text-slate-steel">from direct-response design to scaled checkout.</span>
                 </>
               }
-              description="Six performance disciplines, one accountable team. Pick a capability to inspect its deliverables, strategy, and execution framework."
+              description="Six performance disciplines powered by an enterprise ecosystem of direct-response design tools, server-side attribution engines, and automation."
             />
 
             <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -645,6 +645,57 @@ export default function HomePage() {
                   </button>
                 </TiltCard>
               ))}
+            </div>
+
+            {/* Integrated Platform Ecosystem & Technical Stack (Merged Skills) */}
+            <div id="skills" className="mt-20 border-t border-white/[0.08] pt-16">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ping font-semibold">
+                    Core Technical Ecosystem
+                  </span>
+                  <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-white">
+                    Platform Ecosystem &amp; Creative Tooling
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-steel max-w-xl">
+                    The direct-response design tools, media buying engines, and lossless attribution APIs powering high-scale campaigns.
+                  </p>
+                </div>
+                <div className="font-mono text-[9px] uppercase tracking-widest text-slate-400">
+                  8 Production Tools Active
+                </div>
+              </div>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {ECOSYSTEM_STACK.map((item) => (
+                  <div
+                    key={item.name}
+                    className="group relative rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 backdrop-blur-md transition-all duration-300 hover:border-ping/40 hover:-translate-y-1"
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ping/0 to-transparent transition-all duration-500 group-hover:via-ping/70"
+                    />
+                    <div className="flex items-center justify-between">
+                      <span className="grid h-10 w-10 place-items-center rounded-xl border border-ping/25 bg-ping/[0.07] text-ping transition-all group-hover:bg-ping/15 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.3)]">
+                        <item.icon className="h-5 w-5" />
+                      </span>
+                      <span className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-ping">
+                        {item.tag}
+                      </span>
+                    </div>
+                    <h4 className="mt-4 font-display text-base font-semibold text-white group-hover:text-ping transition-colors">
+                      {item.name}
+                    </h4>
+                    <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mt-0.5">
+                      {item.category}
+                    </p>
+                    <p className="mt-2 text-xs leading-relaxed text-slate-steel">
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -790,8 +841,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ========================================================================= */}
-        {/* 6. CAREER JOURNEY & TRACK RECORD */}
+        {/* ==================================================================        {/* ========================================================================= */}
+        {/* 6. TRACK RECORD: CAREER JOURNEY & CLIENT REVIEWS */}
         {/* ========================================================================= */}
         <section id="journey" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
           <div aria-hidden className="absolute inset-0 bg-grid opacity-30 mask-fade-y" />
@@ -799,14 +850,14 @@ export default function HomePage() {
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <SectionHeading
               index="04"
-              eyebrow="My Journey"
+              eyebrow="Journey &amp; Reviews"
               title={
                 <>
                   Proven execution.{" "}
-                  <span className="text-slate-steel">Tested in competitive markets.</span>
+                  <span className="text-slate-steel">Verified client results.</span>
                 </>
               }
-              description="A track record built on disciplined media buying, direct-response design, and scalable client growth."
+              description="A track record built on disciplined media buying, direct-response design, and scalable client growth across competitive e-commerce markets."
             />
 
             <div className="mt-14 grid gap-8 lg:grid-cols-2">
@@ -882,133 +933,80 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* ========================================================================= */}
-        {/* 7. PLATFORM ECOSYSTEM & TECHNICAL STACK (CLEAN SVG CARDS, ZERO NUMERIC BARS) */}
-        {/* ========================================================================= */}
-        <section id="skills" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
-          <div aria-hidden className="absolute inset-0 bg-grid-fine opacity-25 mask-fade-y" />
-
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeading
-              index="05"
-              eyebrow="Ecosystem & Tools"
-              title={
-                <>
-                  Platform ecosystem.{" "}
-                  <span className="text-slate-steel">Growth infrastructure.</span>
-                </>
-              }
-              description="A battle-tested stack combining enterprise ad managers, server-side attribution engines, and autonomous workflow bots."
-            />
-
-            <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {ECOSYSTEM_STACK.map((item) => (
-                <div
-                  key={item.name}
-                  className="group relative rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-5 backdrop-blur-md transition-all duration-300 hover:border-ping/40 hover:-translate-y-1"
-                >
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-ping/0 to-transparent transition-all duration-500 group-hover:via-ping/70"
-                  />
-                  <div className="flex items-center justify-between">
-                    <span className="grid h-10 w-10 place-items-center rounded-xl border border-ping/25 bg-ping/[0.07] text-ping transition-all group-hover:bg-ping/15 group-hover:shadow-[0_0_20px_rgba(56,189,248,0.3)]">
-                      <item.icon className="h-5 w-5" />
-                    </span>
-                    <span className="rounded-md border border-white/10 bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-ping">
-                      {item.tag}
-                    </span>
-                  </div>
-                  <h4 className="mt-4 font-display text-base font-semibold text-white group-hover:text-ping transition-colors">
-                    {item.name}
-                  </h4>
-                  <p className="font-mono text-[9.5px] uppercase tracking-wider text-slate-400 mt-0.5">
-                    {item.category}
-                  </p>
-                  <p className="mt-2 text-xs leading-relaxed text-slate-steel">
-                    {item.desc}
+            {/* Integrated Client Reviews & Testimonials (Merged Reviews) */}
+            <div id="reviews" className="mt-20 border-t border-white/[0.08] pt-16">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-ping font-semibold">
+                    Verified Endorsements
+                  </span>
+                  <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight text-white">
+                    What Founders &amp; Brand Directors Say
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-steel max-w-xl">
+                    Direct feedback from brand directors and business owners who scaled their stores through our performance frameworks.
                   </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                <div className="flex items-center gap-1.5 rounded-full border border-signal/30 bg-signal/10 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-signal">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> 100% Client Satisfaction
+                </div>
+              </div>
 
-        {/* ========================================================================= */}
-        {/* 8. CLIENT REVIEWS & VERIFIED TESTIMONIALS */}
-        {/* ========================================================================= */}
-        <section id="reviews" className="relative overflow-hidden bg-obsidian py-24 sm:py-32">
-          <div aria-hidden className="absolute inset-0 bg-grid opacity-35 mask-fade-y" />
-
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <SectionHeading
-              index="06"
-              eyebrow="Testimonials"
-              title={
-                <>
-                  Trusted by founders.{" "}
-                  <span className="text-slate-steel">Verified campaign results.</span>
-                </>
-              }
-              description="Direct feedback from brand directors and business owners who scaled their stores through our performance frameworks."
-            />
-
-            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  quote:
-                    "Hamdan understood our goals quickly, communicated clearly, and delivered a structured campaign that gave us complete clarity on our advertising unit economics.",
-                  author: "Eric Watson",
-                  title: "Brand Director",
-                  company: "Thryve Fashion",
-                  stat: "Verified Brand Director",
-                },
-                {
-                  quote:
-                    "His approach was practical, professional, and focused on results. We achieved profitability from week two and scaled with confidence.",
-                  author: "Muhammad Murtaza",
-                  title: "Co-Founder",
-                  company: "Royal Essence",
-                  stat: "Verified Co-Founder",
-                },
-                {
-                  quote:
-                    "The creative testing framework alone saved us months of wasted spend. We went from guessing to systematic scaling in under 30 days.",
-                  author: "Farhan Saeed",
-                  title: "Head of Growth",
-                  company: "Emerald Accessories",
-                  stat: "Verified Head of Growth",
-                },
-              ].map((rev) => (
-                <div
-                  key={rev.author}
-                  className="relative flex flex-col justify-between rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6 shadow-lg backdrop-blur-md"
-                >
-                  <div>
-                    <div className="flex items-center gap-1 text-amber-signal">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-amber-signal text-amber-signal" />
-                      ))}
+              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  {
+                    quote:
+                      "Hamdan understood our goals quickly, communicated clearly, and delivered a structured campaign that gave us complete clarity on our advertising unit economics.",
+                    author: "Eric Watson",
+                    title: "Brand Director",
+                    company: "Thryve Fashion",
+                    stat: "Verified Brand Director",
+                  },
+                  {
+                    quote:
+                      "His approach was practical, professional, and focused on results. We achieved profitability from week two and scaled with confidence.",
+                    author: "Muhammad Murtaza",
+                    title: "Co-Founder",
+                    company: "Royal Essence",
+                    stat: "Verified Co-Founder",
+                  },
+                  {
+                    quote:
+                      "The creative testing framework alone saved us months of wasted spend. We went from guessing to systematic scaling in under 30 days.",
+                    author: "Farhan Saeed",
+                    title: "Head of Growth",
+                    company: "Emerald Accessories",
+                    stat: "Verified Head of Growth",
+                  },
+                ].map((rev) => (
+                  <div
+                    key={rev.author}
+                    className="relative flex flex-col justify-between rounded-2xl border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-6 shadow-lg backdrop-blur-md"
+                  >
+                    <div>
+                      <div className="flex items-center gap-1 text-amber-signal">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="h-4 w-4 fill-amber-signal text-amber-signal" />
+                        ))}
+                      </div>
+                      <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-steel italic">
+                        &ldquo;{rev.quote}&rdquo;
+                      </p>
                     </div>
-                    <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-steel italic">
-                      &ldquo;{rev.quote}&rdquo;
-                    </p>
-                  </div>
 
-                  <div className="mt-6 border-t border-white/[0.06] pt-4">
-                    <p className="font-display text-sm font-semibold text-white">{rev.author}</p>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400">
-                      {rev.title} · {rev.company}
-                    </p>
-                    <span className="mt-2 inline-block rounded-md border border-signal/30 bg-signal/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-signal">
-                      {rev.stat}
-                    </span>
+                    <div className="mt-6 border-t border-white/[0.06] pt-4">
+                      <p className="font-display text-sm font-semibold text-white">{rev.author}</p>
+                      <p className="font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                        {rev.title} · {rev.company}
+                      </p>
+                      <span className="mt-2 inline-block rounded-md border border-signal/30 bg-signal/10 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-signal">
+                        {rev.stat}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </section>
@@ -1095,7 +1093,7 @@ export default function HomePage() {
               </a>
 
               <a
-                href="https://wa.me/923000000000"
+                href="https://wa.me/923412055383"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group rounded-2xl border border-white/25 bg-navy-950/80 p-5 backdrop-blur-xl transition-all duration-300 hover:border-white hover:bg-navy-900 shadow-xl"
@@ -1108,9 +1106,9 @@ export default function HomePage() {
                 </div>
                 <p className="mt-4 font-mono text-[10px] uppercase tracking-wider text-slate-400">Direct WhatsApp</p>
                 <p className="mt-1 font-display text-sm font-semibold text-white group-hover:text-signal transition-colors">
-                  Priority Founder Channel
+                  +92 341 2055383
                 </p>
-                <p className="mt-1 text-xs text-slate-400">Instant messaging &amp; voice note audits</p>
+                <p className="mt-1 text-xs text-slate-400">Direct chat &amp; strategy consultations</p>
               </a>
 
               <a
